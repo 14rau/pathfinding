@@ -49,31 +49,38 @@ class App extends Component {
     return (
       <>
           <h3>School Project: Pathfinding</h3>
-          <textarea value={this.matrixInput} onChange={e => this.matrixInput = e.target.value}/>
-          <button onClick={() => this.data = JSON.parse(this.matrixInput)}>load matrix</button>
-          <select onChange={e => this.editorState = parseInt(e.target.value)}>
-            {this.options.map(e => <option value={e.value}>{e.label}</option>)}
-          </select>
-          <div>
-            y
-            <input type="range" min={0} max={20} value={this.sizeY} onChange={e => this.onChangeYAxis(parseInt(e.target.value))}/><br/>
-            x
-            <input type="range" min={0} max={20} value={this.sizeX} onChange={e => this.onChangeXAxis(parseInt(e.target.value))}/>
+          Edit Type: {this.editorState} <br/>
+          <div style={{display: "flex", flexDirection: "row"}}>
+            <div className="side">
+                <div className="btn" style={{marginTop: "16px"}} onClick={() => console.log(JSON.stringify(this.data))}>show in console</div>
+                <div className="btn" onClick={() => this.data = JSON.parse(this.matrixInput)}>load matrix</div>
+                <select style={{width: "100%"}} onChange={e => this.editorState = parseInt(e.target.value)}>
+                  {this.options.map(e => <option value={e.value}>{e.label}</option>)}
+                </select>
+              <div className="slidercontainer">
+                Y:
+                <input className="slider" type="range" min={0} max={20} value={this.sizeY} onChange={e => this.onChangeYAxis(parseInt(e.target.value))}/><br/>
+              </div>
+                <div className="slidercontainer">
+                  X:
+                  <input className="slider" type="range" min={0} max={20} value={this.sizeX} onChange={e => this.onChangeXAxis(parseInt(e.target.value))}/><br/>
+                </div>
+              <textarea value={this.matrixInput} onChange={e => this.matrixInput = e.target.value}/>
+              </div>
+            <div>
+              <span className="detailBadge">Y: {this.sizeY} X: {this.sizeX} <br/></span>
+              <div style={{display: "flex", flexDirection: "row"}}>
+                <Grid data={this.data} type={this.editorState} onChange={this.onChangeData}/>
+              </div>
+            </div>
           </div>
-          <div>
-            Edit Type: {this.editorState} <br/>
-            Y: {this.sizeY} <br/>
-            X: {this.sizeX} <br/>
-          </div>
-          <Grid data={this.data} type={this.editorState} onChange={this.onChangeData}/>
-          <button onClick={() => console.log(JSON.stringify(this.data))}>show in console</button>
       </>
     );
   }
 
   @autobind
   private onChangeYAxis(value: number) {
-    if(value < 0) alert("Invalid Y Value")
+    if(value <= 0) return;
     if(value < this.data.length) {
       this.data.splice(value, this.data.length - value);
     } else {
@@ -86,7 +93,7 @@ class App extends Component {
 
   @autobind
   private onChangeXAxis(value: number) {
-    if(value < 0) alert("Invalid X Value")
+    if(value <= 0) return;
     if(value < this.data[0].length) {
       this.data.forEach(e => {
         e.splice(value, e.length - value);
