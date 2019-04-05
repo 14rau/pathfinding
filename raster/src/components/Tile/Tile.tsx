@@ -52,7 +52,7 @@ export class Tile extends React.Component<ITileProps>{
             case FieldType.WALL: return "black";
             case FieldType.START: return "yellow";
             case FieldType.AGENT: return "tomato";
-            case FieldType.GOAL: return "green;"
+            case FieldType.GOAL: return "green"
         }
     }
 }

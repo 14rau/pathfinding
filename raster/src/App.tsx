@@ -73,6 +73,14 @@ class App extends Component {
                 <Grid data={this.data} type={this.editorState} onChange={this.onChangeData}/>
               </div>
             </div>
+            <div>
+              <ul>
+                <li>Wall: <div style={{width: "10px", height: "10px", backgroundColor: "black"}}/></li>
+                <li>Goal: <div style={{width: "10px", height: "10px", backgroundColor: "green"}}/></li>
+                <li>Start: <div style={{width: "10px", height: "10px", backgroundColor: "yellow"}}/></li>
+                <li>Agent: <div style={{width: "10px", height: "10px", backgroundColor: "tomato"}}/></li>
+              </ul>
+            </div>
           </div>
       </>
     );
