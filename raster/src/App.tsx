@@ -16,6 +16,7 @@ class App extends Component {
   @observable private sizeY = 10;
   @observable private editorState = FieldType.WALL;
   @observable private data = this.defaultTiles
+  @observable private matrixInput = "";
 
   private options = [{
     label: "Wall",
@@ -48,6 +49,8 @@ class App extends Component {
     return (
       <>
           <h3>School Project: Pathfinding</h3>
+          <textarea value={this.matrixInput} onChange={e => this.matrixInput = e.target.value}/>
+          <button onClick={() => this.data = JSON.parse(this.matrixInput)}>load matrix</button>
           <select onChange={e => this.editorState = parseInt(e.target.value)}>
             {this.options.map(e => <option value={e.value}>{e.label}</option>)}
           </select>
@@ -63,6 +66,7 @@ class App extends Component {
             X: {this.sizeX} <br/>
           </div>
           <Grid data={this.data} type={this.editorState} onChange={this.onChangeData}/>
+          <button onClick={() => console.log(JSON.stringify(this.data))}>show in console</button>
       </>
     );
   }
