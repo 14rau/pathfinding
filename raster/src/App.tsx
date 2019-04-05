@@ -38,7 +38,11 @@ class App extends Component {
     for(let x = 0; x < this.sizeX; x++) {
       let xRow = [];
       for(let y = 0; y < this.sizeY; y++) {
-        xRow.push(0);
+        if(x === 0 || y === 0) {
+          xRow.push(1);
+        } else {
+          xRow.push(0);
+        }
       }
       ret.push(xRow);
     }
