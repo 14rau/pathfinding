@@ -12,8 +12,8 @@ import autobind from "autobind-decorator";
 class App extends Component {
 
   // track the editor state -> in which mode are we? Set Goal, Walls, Start?
-  @observable private sizeX = 10;
-  @observable private sizeY = 10;
+  @observable private sizeX = 11;
+  @observable private sizeY = 11;
   @observable private editorState = FieldType.WALL;
   @observable private data = this.defaultTiles
   @observable private matrixInput = "";
@@ -38,8 +38,8 @@ class App extends Component {
     for(let x = 0; x < this.sizeX; x++) {
       let xRow = [];
       for(let y = 0; y < this.sizeY; y++) {
-        if(x === 0 || y === 0) {
-          xRow.push(1);
+        if(x === 0 || y === 0 || y === (this.sizeY - 1) || x === (this.sizeX - 1)) {
+          xRow.push(5);
         } else {
           xRow.push(0);
         }
@@ -144,6 +144,17 @@ class App extends Component {
         if(p === type) this.data[y][x] = FieldType.NOTHING;
       });
     });
+  }
+
+  private replaceTiles(oldTile: FieldType, newTile: FieldType, map: FieldType[][]) {
+    map.forEach((e, y) => {
+      e.forEach((p, x) => {
+        if(p === oldTile) {
+          map[y][x] = newTile;
+        }
+      })
+    })
+    return map;
   }
 }
 

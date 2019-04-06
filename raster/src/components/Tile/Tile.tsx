@@ -6,6 +6,7 @@ export enum FieldType {
     AGENT,
     START,
     GOAL,
+    BLOCKED,
 
 }
 
@@ -42,6 +43,8 @@ export class Tile extends React.Component<ITileProps>{
                     width: `${this.props.size.width}px`,
                     height: `${this.props.size.height}px`}}
                 onClick={this.props.onClick}
+                // we want the outer to be disabled, so you can't remove it
+                disabled={this.props.type === FieldType.BLOCKED}
             />
         )
     }
@@ -49,6 +52,7 @@ export class Tile extends React.Component<ITileProps>{
     private get color() {
         switch(this.props.type) {
             case FieldType.NOTHING: return "grey";
+            case FieldType.BLOCKED:
             case FieldType.WALL: return "black";
             case FieldType.START: return "yellow";
             case FieldType.AGENT: return "tomato";
