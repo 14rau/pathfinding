@@ -5,11 +5,22 @@ import './App.css';
 import { Grid } from './components/Grid/Grid';
 import { FieldType } from "./components/Tile/Tile";
 import autobind from "autobind-decorator";
+import { Hints } from "./components/Hints/Hints";
+import { Utils } from "./lib/Util";
 
 
 // -> This is the data we want to show
+interface IAppProps {
+  x?: number;
+  y?: number;
+}
 @observer
-class App extends Component {
+class App extends Component<IAppProps> {
+
+  public static defaultProps = {
+    x: 11,
+    y: 11,
+  };
 
   // track the editor state -> in which mode are we? Set Goal, Walls, Start?
   @observable private sizeX = 11;
@@ -78,14 +89,17 @@ class App extends Component {
               </div>
             </div>
             <div>
-              <ul>
-                <li>Wall: <div style={{width: "10px", height: "10px", backgroundColor: "black"}}/></li>
-                <li>Goal: <div style={{width: "10px", height: "10px", backgroundColor: "green"}}/></li>
-                <li>Start: <div style={{width: "10px", height: "10px", backgroundColor: "yellow"}}/></li>
-                <li>Agent: <div style={{width: "10px", height: "10px", backgroundColor: "tomato"}}/></li>
-              </ul>
+              <Hints
+                hints={[
+                  {color: "black", content: "Wall"},
+                  {color: "green", content: "Goal"},
+                  {color: "yellow", content: "Start"},
+                  {color: "tomato", content: "Agent"},
+                ]}
+              />
             </div>
           </div>
+          {JSON.stringify(this.replaceTiles(FieldType.BLOCKED, FieldType.WALL, this.data))}
       </>
     );
   }
@@ -97,7 +111,7 @@ class App extends Component {
       this.data.splice(value, this.data.length - value);
     } else {
       this.data.push(
-        this.getArrayWithLength(this.data[0].length) // we can use 0 here, because we will always have at least 1 element
+        Utils.getArrayWithLength(this.data[0].length) // we can use 0 here, because we will always have at least 1 element
       )
     }
     this.sizeY = value;
@@ -128,14 +142,6 @@ class App extends Component {
   }
 
   // Helper functions -> May add an Utils script?
-
-  private getArrayWithLength(len: number) {
-    let ret = [];
-    for(let i = 0; i < len; i++) {
-      ret.push(0);
-    }
-    return ret;
-  }
 
   @autobind
   private resetField(type: FieldType) {
