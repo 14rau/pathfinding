@@ -107,7 +107,7 @@ export default (id, map2d, movement) => {
         if(agentObject && movement.length && Array.isArray(movement)) {
             agentObject.move(movement.pop());
         }
-        agentObject.updateRotation(1,1,1);
+        agentObject.updateRotation(0,0,1);
         modelRender.render(light, camera);
         window.requestAnimationFrame(render);
     }
