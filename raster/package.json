@@ -13,7 +13,12 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "typescript": "3.4.1"
+    "react-spring": "^8.0.19",
+    "react-three-fiber": "^2.0.2",
+    "react-use-gesture": "^1.0.0",
+    "three": "^0.103.0",
+    "typescript": "3.4.1",
+    "vec-la": "^1.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

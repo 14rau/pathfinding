@@ -1,18 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './lib/WebGL/TestApp';
 import * as serviceWorker from './serviceWorker';
 
-let args = document.location.search.split("?")[1].split("&");
-console.log(args);
-let propertys = args.map(e => {
-    let prop = e.split("=");
-    return {
-        [prop[0]]: prop[1]
-    }
-});
-console.log(propertys)
+
 
 ReactDOM.render(<App/>, document.getElementById('root'));
 

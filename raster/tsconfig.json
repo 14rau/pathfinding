@@ -17,7 +17,6 @@
     "noEmit": true,
     "jsx": "preserve",
     "experimentalDecorators": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [
