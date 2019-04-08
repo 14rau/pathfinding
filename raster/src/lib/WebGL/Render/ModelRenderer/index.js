@@ -1,14 +1,10 @@
-
-
-import { GLC } from '../GlCommander';
-import ModelShader from '../Shaders/ModelShader';
+import GLC from '../../GLCommander';
+import Shader from '../../Shaders/ModelShader';
 
 export default class ModelRenderer {
-    private shader: ModelShader;
-    private models;
 
     constructor(){
-        this.shader = new ModelShader();
+        this.shader = new Shader();
         this.models = {};
     }
 

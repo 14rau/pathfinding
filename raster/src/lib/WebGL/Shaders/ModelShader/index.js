@@ -1,24 +1,10 @@
-
-import VertexSource from './Vertex';
-import FragmentSource from './Fragment';
-import Locations from './Locations';
-import { GLC } from '../../GlCommander';
+import GLC from '../../GLCommander';
+import VertexSource from './vertex';
+import FragmentSource from './fragment';
+import Locations from './locations';
 
 
 export default class ModelShader {
-    positionAttribute: number;
-    textureCoordsAttribute: number;
-    normalAttribute: number;
-    transformationMatrix: WebGLUniformLocation;
-    viewMatrix: WebGLUniformLocation;
-    projectionMatrix: WebGLUniformLocation;
-    lightPosition: WebGLUniformLocation;
-    lightColor: WebGLUniformLocation;
-    lightAmbient: WebGLUniformLocation;
-    diffuseTexture: WebGLUniformLocation;
-    hasDiffuseTexture: WebGLUniformLocation;
-    program: WebGLProgram;
-    
     constructor(){
         const vertexShader = GLC.createVertexShader();
         GLC.addShaderSource(vertexShader, VertexSource);
