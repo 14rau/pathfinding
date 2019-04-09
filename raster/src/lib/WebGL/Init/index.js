@@ -124,14 +124,14 @@ export default (id, map2d, movement) => {
                 // first axis is axis, second is amount
                 agentObject.move(movement[0][0], (movement[0][1] * delta) / 1000.0);
                 move += (movement[0][1] * delta) / 1000.0;
-                if((move*-1) >= movement[0][1]*-1) {
+                if((Math.abs(move)) >= Math.abs(movement[0][1])) {
                     movement.shift();
                     move = 0;
                 }
-                // console.log(JSON.stringify(movement), move, (move*-1),  movement[0][1]*-1)
             }   
             lastUpdateTime = new Date().getTime();
         }
+        agentObject.updateRotation(1,1,1);
         goalObject.updateRotation(0,0,1);
         modelRender.render(light, camera);
         window.requestAnimationFrame(render);
