@@ -23,16 +23,11 @@ export default class ModelInstance {
         this.transformationMatrix = createTransformationMatrix(this.x, this.y, this.z, this.rx, this.ry, this.rz, this.scale);
     }
 
-    move(direction, amount = 1) {
-        switch(direction) {
-            case "up": this.y += amount; break;
-            case "down": this.y -= amount; break;
-            case "left": this.x -= amount; break;
-            case "right": this.x -= amount; break;
-            default: return;
-        }
-        this.updateTransformationMatrix()
-    
+    move(axis, amount) {
+        // check provided axis: must be x or y
+        if(!["x","y"].includes(axis)) return;
+        this[axis] += amount;
+        this.updateTransformationMatrix();   
     }
 
     getTransformationMatrix = () => this.transformationMatrix;

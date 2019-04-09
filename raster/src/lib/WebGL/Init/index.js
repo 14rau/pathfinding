@@ -25,6 +25,16 @@ export default (id, map2d, movement) => {
     GLC.init(gl);
     MouseEvent.init();
 
+    // map the movement to specific movements
+    movement = movement.map(e => {
+        switch(e) {
+            case "up": return ["y", 1];
+            case "down": return ["y", -1];
+            case "left": return ["x", -1];
+            case "right": return ["x", +1];
+        }
+    })
+
     const vertices = Cube.vertices;
     const indices = Cube.indices;
     const normals = Cube.normals;
@@ -72,7 +82,8 @@ export default (id, map2d, movement) => {
     const agent = new ModelType(vertices, indices, normals, textureCoords);
     agent.addMaterial(agentMat);
     modelRender.registerNewModel(agent, 'agent');
-    var agentObject
+    var agentObject;
+    var goalObject;
 
     
     map2d.forEach((e, ei) => {
@@ -91,8 +102,8 @@ export default (id, map2d, movement) => {
                     modelRender.addInstance(agentObject, 'agent');
                     break;
                 case 4:
-                    const goal = new ModelInstance(ei, pi, 0.35, 0, 0, 0, 0.2 );
-                    modelRender.addInstance(goal, 'goal');
+                    goalObject = new ModelInstance(ei, pi, 0.35, 0, 0, 0, 0.2 );
+                    modelRender.addInstance(goalObject, 'goal');
                     break;
 
             }
@@ -102,12 +113,26 @@ export default (id, map2d, movement) => {
         });
     })
 
+    var lastUpdateTime;
+    var move = 0;
     const render = () => {
+        var currentTime = new Date().getTime()
         GLC.clear(1.0, 1.0, 1.0, 1.0);
         if(agentObject && movement.length && Array.isArray(movement)) {
-            agentObject.move(movement.pop());
+            if(lastUpdateTime) {
+                var delta = currentTime - lastUpdateTime;
+                // first axis is axis, second is amount
+                agentObject.move(movement[0][0], (movement[0][1] * delta) / 1000.0);
+                move += (movement[0][1] * delta) / 1000.0;
+                if((move*-1) >= movement[0][1]*-1) {
+                    movement.shift();
+                    move = 0;
+                }
+                // console.log(JSON.stringify(movement), move, (move*-1),  movement[0][1]*-1)
+            }   
+            lastUpdateTime = new Date().getTime();
         }
-        agentObject.updateRotation(0,0,1);
+        goalObject.updateRotation(0,0,1);
         modelRender.render(light, camera);
         window.requestAnimationFrame(render);
     }

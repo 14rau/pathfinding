@@ -4,7 +4,7 @@ import init from './Init';
 export default class WebGL extends React.Component{
 
     componentDidMount(){
-        init('webgl', this.props.data, ["left", "down", "left", "left", "left"]);
+        init('webgl', this.props.data, ["left", "down", "left", "left", "left", "left", "up","up","up","up","up","up","up","up","up","up","up","up","up","up","up", ]);
     }
 
     render(){
