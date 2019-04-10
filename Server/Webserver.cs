@@ -1,12 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -51,21 +47,21 @@ namespace Server
                     {
                         ThreadPool.QueueUserWorkItem((c) =>
                         {
-                        var ctx = c as HttpListenerContext;
+                        var context = c as HttpListenerContext;
                         try
                         {
-                                string[] rstr = _responderMethod(ctx.Request);
+                                string[] responseArray = _responderMethod(context.Request);
                                 JObject responseObject = new JObject();
-                                responseObject.Add("data", JArray.FromObject(rstr));
-                                byte[] buf = Encoding.UTF8.GetBytes(responseObject.ToString());
-                                ctx.Response.ContentLength64 = buf.Length;
-                                ctx.Response.OutputStream.Write(buf, 0, buf.Length);
+                                responseObject.Add("data", JArray.FromObject(responseArray));
+                                byte[] buffer = Encoding.UTF8.GetBytes(responseObject.ToString());
+                                context.Response.ContentLength64 = buffer.Length;
+                                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
                             }
                             catch { } // suppress any exceptions
                             finally
                             {
                                 // always close the stream
-                                ctx.Response.OutputStream.Close();
+                                context.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());
                     }
