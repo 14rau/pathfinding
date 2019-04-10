@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -11,15 +13,28 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Webserver ws = new Webserver(SendResponse, "http://localhost:8080/test/");
+            Webserver ws = new Webserver(SendResponse, "http://127.0.0.1:8080/");
             ws.Run();
             Console.WriteLine("A simple webserver. Press a key to quit.");
             Console.ReadKey();
             ws.Stop();
         }
-        public static string SendResponse(HttpListenerRequest request)
+
+        public static string[] SendResponse(HttpListenerRequest request)
         {
-            return string.Format("<HTML><BODY>My web page.<br>{0}</BODY></HTML>", DateTime.Now);
+            int[][] mapArray;
+            using (var reader = new StreamReader(request.InputStream,
+                                                             request.ContentEncoding))
+            {
+                string text = reader.ReadToEnd();
+                var jsonObj = JObject.Parse(text);
+                Console.WriteLine("data : " + (JArray)jsonObj["name"]);
+
+                JArray arr = (JArray)jsonObj["data"];
+                mapArray = arr.ToObject<int[][]>();
+            }
+            return PathfindingApi.calculatePath(mapArray);
         }
+
     }
 }

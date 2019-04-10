@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,15 +13,15 @@ namespace Server
     class Webserver
     {
         private readonly HttpListener _listener = new HttpListener();
-        private readonly Func<HttpListenerRequest, string> _responderMethod;
+        private readonly Func<HttpListenerRequest, string[]> _responderMethod;
 
-        public Webserver(string[] prefixes, Func<HttpListenerRequest, string> method)
+        public Webserver(string[] prefixes, Func<HttpListenerRequest, string[]> method)
         {
             if (!HttpListener.IsSupported)
                 throw new NotSupportedException(
                     "Needs Windows XP SP2, Server 2003 or later.");
 
-            // URI prefixes are required, for example 
+            // URI prefixes are required 
             // "http://localhost:8080/index/".
             if (prefixes == null || prefixes.Length == 0)
                 throw new ArgumentException("prefixes");
@@ -36,7 +37,7 @@ namespace Server
             _listener.Start();
         }
 
-        public Webserver(Func<HttpListenerRequest, string> method, params string[] prefixes)
+        public Webserver(Func<HttpListenerRequest, string[]> method, params string[] prefixes)
             : this(prefixes, method) { }
 
         public void Run()
@@ -50,25 +51,13 @@ namespace Server
                     {
                         ThreadPool.QueueUserWorkItem((c) =>
                         {
-                            var ctx = c as HttpListenerContext;
-                        var request = ctx.Request;
-                        string text;
-                            using (var reader = new StreamReader(request.InputStream,
-                                                                 request.ContentEncoding))
-                            {
-                                text = reader.ReadToEnd();
-                                var jsonObj = JObject.Parse(text);
-                                Console.WriteLine("Country : " + (string)jsonObj["country_name"]);
-                                Console.WriteLine("Country Code : " + (string)jsonObj["country_code"]);
-                                Console.WriteLine("Region Code : " + (string)jsonObj["region_code"]);
-                                Console.WriteLine("City : " + (string)jsonObj["city"]);
-                                Console.WriteLine("Zip Code :" + (string)jsonObj["zipcode"]);
-                                Console.WriteLine("Latitude :" + (string)jsonObj["latitude"]);
-                            }
-                            try
-                            {
-                                string rstr = _responderMethod(ctx.Request);
-                                byte[] buf = Encoding.UTF8.GetBytes(rstr);
+                        var ctx = c as HttpListenerContext;
+                        try
+                        {
+                                string[] rstr = _responderMethod(ctx.Request);
+                                JObject responseObject = new JObject();
+                                responseObject.Add("data", JArray.FromObject(rstr));
+                                byte[] buf = Encoding.UTF8.GetBytes(responseObject.ToString());
                                 ctx.Response.ContentLength64 = buf.Length;
                                 ctx.Response.OutputStream.Write(buf, 0, buf.Length);
                             }
