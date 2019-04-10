@@ -88,21 +88,21 @@ export default (id, map2d, movement) => {
     
     map2d.forEach((e, ei) => {
         e.forEach((p, pi) => {
-
+            // our problem is, that the coordinate system in the 3d view starts on the bottom left, the array kinda starts in the top left. So we need to invert some values
             switch(p) {
                 case 1:
-                    const wall = new ModelInstance(ei, pi, 1, 0, 0, 0, 0.5 );
+                    const wall = new ModelInstance(pi, map2d.length - ei-1, 1, 0, 0, 0, 0.5 );
                     modelRender.addInstance(wall, 'wall');
                     break;
                 case 3:
-                    const start = new ModelInstance(ei, pi, 0.35, 0, 0, 0, 0.2 );
+                    const start = new ModelInstance(pi, map2d.length - ei-1, 0.35, 0, 0, 0, 0.2 );
                     modelRender.addInstance(start, 'start');
                     // spawn the agent
-                    agentObject = new ModelInstance(ei, pi, 1, 0, 0, 0, 0.2 );
+                    agentObject = new ModelInstance(pi, map2d.length - ei-1, 1, 0, 0, 0, 0.2 );
                     modelRender.addInstance(agentObject, 'agent');
                     break;
                 case 4:
-                    goalObject = new ModelInstance(ei, pi, 0.35, 0, 0, 0, 0.2 );
+                    goalObject = new ModelInstance(pi, map2d.length - ei-1, 0.35, 0, 0, 0, 0.2 );
                     modelRender.addInstance(goalObject, 'goal');
                     break;
 
@@ -124,15 +124,13 @@ export default (id, map2d, movement) => {
                 // first axis is axis, second is amount
                 agentObject.move(movement[0][0], (movement[0][1] * delta) / 1000.0);
                 move += (movement[0][1] * delta) / 1000.0;
-                if((move*-1) >= movement[0][1]*-1) {
+                if((Math.abs(move)) >= Math.abs(movement[0][1])) {
                     movement.shift();
                     move = 0;
                 }
-                // console.log(JSON.stringify(movement), move, (move*-1),  movement[0][1]*-1)
             }   
             lastUpdateTime = new Date().getTime();
         }
-        goalObject.updateRotation(0,0,1);
         modelRender.render(light, camera);
         window.requestAnimationFrame(render);
     }

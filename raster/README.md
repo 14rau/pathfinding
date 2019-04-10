@@ -3,3 +3,5 @@ Hinzugefügt:
 
 - Mobx (Statemanagement)
 - autobind (um auf changes zu reagieren)
+
+- Zusätzliche Components unter: https://blueprintjs.com/docs/#core

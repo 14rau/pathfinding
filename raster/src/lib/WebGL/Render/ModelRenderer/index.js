@@ -21,6 +21,11 @@ export default class ModelRenderer {
         this.models[id].instances.push(instance);
     }
 
+    removeInstance = (instance, id) => {
+        var index = this.models[id].instances.findIndex(instance);
+        this.models[id].instances.splice(index, 1);
+    }
+
 
     preRender = () => {
         GLC.viewport();

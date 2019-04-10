@@ -4,14 +4,24 @@ import GLC from './lib/WebGL/GLCommander';
 import './index.css';
 
 import * as serviceWorker from './serviceWorker';
-import WebGL from './lib/WebGL';
+import { Provider } from 'mobx-react';
+import { PageStore } from './lib/PageStore';
+import "@blueprintjs/core/lib/css/blueprint.css"
+import "@blueprintjs/icons/lib/css/blueprint-icons.css"
+import App from './App';
 
 // sideeffect
 
 
 
 
-ReactDOM.render(<WebGL data={[[1,1,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,1,1],[1,0,1,0,0,0,0,0,0,1],[1,0,1,1,0,1,1,1,0,1],[1,0,0,1,0,1,0,0,0,1],[1,0,3,1,0,1,0,1,1,1],[1,1,1,1,0,1,0,0,0,1],[1,4,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]]}/>, document.getElementById('root'));
+ReactDOM.render(
+    <Provider pageStore={new PageStore()}>
+        <div className="bp3-dark">
+            <App/>
+        </div>
+    </Provider>
+    , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
