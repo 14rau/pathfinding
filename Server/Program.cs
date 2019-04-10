@@ -9,7 +9,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Webserver webServer = new Webserver(SendResponse, "http://127.0.0.1:8080/");
+            Webserver webServer = new Webserver(SendResponse, "http://127.0.0.1:8080/pathfinding/");
             webServer.Run();
             Console.WriteLine("Press a key to quit.");
             Console.ReadKey();
