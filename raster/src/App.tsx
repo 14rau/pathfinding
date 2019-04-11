@@ -27,9 +27,9 @@ class App extends Component<IAppProps> {
 
     return <>
     {this.loading && <Loading/>}
-    <Tabs vertical id="TabsExample" selectedTabId={this.props.pageStore.currentView} renderActiveTabPanelOnly onChange={this.props.pageStore.setView}>
+    <Tabs vertical id="TabsExample" selectedTabId={this.props.pageStore.currentView} onChange={this.props.pageStore.setView}>
       <Tab id="ng" title="Editor" panel={<Editor />} />
-      <Tab id="mb" title="3d - View" panel={<WebGL data={this.props.pageStore.mapData} path={this.props.pageStore.movement}/>} />
+      <Tab id="mb" title="3d - View" panel={<WebGL />} />
     </Tabs>
     <Button text="Send Request" onClick={this.sendData}/>
     </>

@@ -5,7 +5,7 @@ export class PageStore {
     @observable public sizeX = 11;
     @observable public sizeY = 11;
     @observable public mapData = this.defaultTiles;
-    @observable public movement = [];
+    @observable public movement = ["left", "left", "left"];
     @observable public currentView = "ng";
 
     public get defaultTiles() {

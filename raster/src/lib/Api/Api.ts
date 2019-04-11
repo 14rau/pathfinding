@@ -9,9 +9,6 @@ export class ApiController{
             let res = await fetch(`${this.protocoll}://${this.apihost}:${this.apiport}/${path}`, {
                 method: type,
                 mode: "cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify(data)
             });
             let json = await res.json();
@@ -23,7 +20,7 @@ export class ApiController{
             );
             return json;
         } catch (err) {
-            alert("Sorry, an error occured")
+            throw err;
         }
     }
 
