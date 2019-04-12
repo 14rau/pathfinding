@@ -29,7 +29,6 @@ namespace Server
             var jsonObj = JObject.Parse(text);
             JArray arr = (JArray)jsonObj["data"];
             mapArray = arr.ToObject<int[][]>();
-
             return PathfindingApi.calculatePath(mapArray);
         }
 

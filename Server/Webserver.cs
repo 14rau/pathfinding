@@ -17,12 +17,9 @@ namespace Server
                 throw new NotSupportedException(
                     "Needs Windows XP SP2, Server 2003 or later.");
 
-            // URI prefixes are required 
-            // "http://localhost:8080/index/".
             if (prefixes == null || prefixes.Length == 0)
                 throw new ArgumentException("prefixes");
 
-            // A responder method is required
             if (method == null)
                 throw new ArgumentException("method");
 
@@ -57,10 +54,11 @@ namespace Server
                                 context.Response.ContentLength64 = buffer.Length;
                                 context.Response.OutputStream.Write(buffer, 0, buffer.Length);
                             }
-                            catch { } // suppress any exceptions
+                            catch {
+                                context.Response.StatusCode = 404;
+                            } 
                             finally
                             {
-                                // always close the stream
                                 context.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());
