@@ -10,14 +10,11 @@ namespace Server
     {
         private Position position;
         private List<Position> knownPositions;
-        private List<string> path;
-
 
         public Agent(Position startPosition)
         {
             this.position = startPosition;
             knownPositions = new List<Position>();
-            path = new List<string>();
             knownPositions.Add(position);
         }
 
@@ -31,7 +28,6 @@ namespace Server
             position = position.getRight();
             clearUselessPathOptions();
             knownPositions.Add(position);
-            path.Add("Right");
         }
 
         public void goLeft()
@@ -39,7 +35,6 @@ namespace Server
             position = position.getLeft();
             clearUselessPathOptions();
             knownPositions.Add(position);
-            path.Add("Left");
         }
 
         public void goUp()
@@ -47,7 +42,6 @@ namespace Server
             position = position.getUp();
             clearUselessPathOptions();
             knownPositions.Add(position);
-            path.Add("Up");
         }
 
         public void goDown()
@@ -55,7 +49,6 @@ namespace Server
             position = position.getDown();
             clearUselessPathOptions();
             knownPositions.Add(position);
-            path.Add("Down");
         }
 
         public string[] getPath()
@@ -66,7 +59,7 @@ namespace Server
         private string[] convertToFrontendCoordinateSystem()
         {
             List<string> frontendMovement = new List<string>();
-            foreach(string movement in path)
+            foreach(string movement in createMovementPath())
             {
                 if (movement.Equals("Left"))
                     frontendMovement.Add("Up");
@@ -82,15 +75,31 @@ namespace Server
 
         private void clearUselessPathOptions()
         {
-            //needs rework
-            if (knownPositions.Contains(position)&&false)
+            if (knownPositions.Contains(position))
             {
-                int rangeStart = knownPositions.IndexOf(position);
-                int objectsToRemove = knownPositions.Count() - (rangeStart);
-                path.RemoveRange(rangeStart-1, objectsToRemove);
-                knownPositions.RemoveRange(rangeStart, objectsToRemove);
-                
+                knownPositions = knownPositions.GetRange(0,knownPositions.IndexOf(position));
             }
+        }
+
+        private List<string> createMovementPath()
+        {
+            List<string> path = new List<string>();
+
+            for(int i=0; i < knownPositions.Count()-1; i++)
+            {
+                Position current = knownPositions.ElementAt(i);
+                Position next = knownPositions.ElementAt(i + 1);
+
+                if (current.getLeft().Equals(next))
+                    path.Add("Left");
+                if (current.getRight().Equals(next))
+                    path.Add("Right");
+                if (current.getUp().Equals(next))
+                    path.Add("Up");
+                if (current.getDown().Equals(next))
+                    path.Add("Down");
+            }
+            return path;
         }
     }
 }
