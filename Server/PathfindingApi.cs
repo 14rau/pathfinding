@@ -14,8 +14,8 @@ namespace Server
          **/
         public static string[] calculatePath(int[][] map)
         {
-            String[] movement = { "Up", "Up", "Left" };
-            return movement;
+            PathfindingEngine engine = new PathfindingEngine(map);
+            return engine.calculatePath();
         }
     }
 }
