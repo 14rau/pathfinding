@@ -11,18 +11,64 @@ import { toJS } from 'mobx';
 import autobind from 'autobind-decorator';
 
 export class AnimationHandler{
-    private objects: Map<any, any>;
     private lights: Map<any, any>;
     private cameras: Map<any, any>;
     private modelRender;
-    private map: Map<{x: number, y: number}, any>;
     private agent;
     private goalObject;
     private map2d = [];
+    private movement = [];
+    private movementCopy = [];
+    private isMoving = false;
+    private subscriber: React.Component[] = [];
+    private startPosition = {
+        y: 0,
+        x: 0
+    }
 
-    constructor(private id, map2d, private movement) {
+    private movementSpeedMultiplier = 2;
+
+    // we don't want the isMoving variable to be changed from the outside, so we take a getter
+    public get moving() {
+        return this.isMoving;
+    }
+
+    constructor(private id, map2d, movement) {
         this.map2d = Object.assign(this.map2d, map2d);
+        this.movement = movement.map(e => e);
         this.init();
+    }
+
+    // we want to tell the UI, that we are changing something in here, so we can 
+    public subscribe(component: React.Component) {
+        this.subscriber.push(component);
+    }
+
+    public unsubscribe(component) {
+        this.subscriber.splice(this.subscriber.findIndex(component), 1);
+    }
+
+    public action() {
+        this.subscriber.forEach(e => {
+            e.forceUpdate();
+        });
+    }
+    
+    public toggleMovement() {
+        console.log(this.isMoving, "isMoving call")
+        this.isMoving = !this.isMoving;
+    }
+
+    public resetMovement() {
+        this.modelRender.models.agent.instances = []; // despawn agents
+        this.spawnAgent(this.startPosition.y, this.startPosition.x); // spawn new agent
+        this.movement = this.movementCopy.map(e => e); // copy movement array
+    }
+
+    public updateMovementPath(movement) {
+        this.resetMovement(); // resets agent back to spawn
+        this.movement = movement;
+        this.convert2DMap(); // converts current movement to new movement
     }
 
     public init() {
@@ -43,6 +89,8 @@ export class AnimationHandler{
         this.initLights();
         this.initCameras();
         this.convert2DMap();
+        // we want to make our copy after the convert
+        this.movementCopy = this.movement.map(e => e);
         this.init3DObjects();
         this.createInitialScene();
     }
@@ -58,36 +106,49 @@ export class AnimationHandler{
 
     @autobind
     public updateMap(newMap) {
-        console.log(JSON.stringify(this.map2d), "oldMap in func")
-        console.log(JSON.stringify(newMap), "new map in func")
-            this.map2d.forEach((yObj, y) => {
-            yObj.forEach((xObj, x) => {
-                console.log(xObj, newMap[y][x], y, x)
-                if(xObj !== newMap[y][x]) {
-                    console.log("FOUND DIFF")
-                    // remove element
-                    let selectedObject = this.map.get({x,y});
-                    this.modelRender.removeInstance(selectedObject, this.getType(xObj));
-                    // add new element
-                    const object = new ModelInstance(y, this.map2d.length - x - 1, 1, 0, 0, 0, 0.5 );
-                    this.modelRender.addInstance(object, this.getType(newMap[y][x]));
-                    this.map.set({x, y}, object);                 
+        for(let id in this.modelRender.models) {
+            this.modelRender.models[id].instances = [];
+        }
+        this.createInitialScene();
+    }
 
-                }
-            });
-        });
-        console.log(toJS(newMap), toJS(this.map2d));
-        // this.map2d = newMap;
+    public canMove(y, x, direction, movement) {
+        y = Math.ceil(y);
+        x = Math.ceil(x);
+        // y = this.map2d.length - y - 1;
+        // console.log("---------------")
+        // console.log("Current position: ", y, x)
+        // console.log("Next Position: ")
+        // switch(direction) {
+        //       case "y": console.log(y + movement, x); break;
+        //       case "x": console.log(y, x + movement); break;
+        //   }
+        // console.log("Field Type:")
+        // switch(direction) {
+        //       case "y": console.log((this.map2d[y + movement][x])); break
+        //       case "x": console.log((this.map2d[y][x+movement])); break;
+        //   }
+        // switch(direction) {
+        //     case "y": console.log (!((this.map2d[y + movement][x] === 1) || this.map2d[y + movement][x] == null)); break;
+        //     case "x": console.log (!((this.map2d[y][x + movement] === 1) || (this.map2d[y][x + movement] == null))); break;
+        // }
+        try {
+          switch(direction) {
+                case "y": return !((this.map2d[y + movement][x] === 1) || this.map2d[y + movement][x] == null)
+                case "x": return !((this.map2d[y][x + movement] === 1) || (this.map2d[y][x + movement] == null));
+            }
+        } catch(err) {
+            console.log(err)
+            return false;
+        }
     }
 
     public spawnAgent(y, x) {
-        this.agent = null;
         this.agent = new ModelInstance(y, this.map2d.length - x - 1, 1, 0, 0, 0, 0.2 );
         this.modelRender.addInstance(this.agent, 'agent');
     }
 
     private createInitialScene() {
-        this.map = new Map();
         this.map2d.forEach((e, ei) => {
             e.forEach((p, pi) => {
                 switch(p) {
@@ -95,12 +156,14 @@ export class AnimationHandler{
                     case 1:
                         const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(wall, 'wall');
-                        this.map.set({x: ei, y: pi}, wall);
                         break;
                         case 3:
                         const start = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
                         this.modelRender.addInstance(start, 'start');
-                        this.map.set({x: ei, y: pi}, start);
+                        this.startPosition = {
+                            y: pi,
+                            x: ei
+                        };
                         // spawn the agent
                         this.agent = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.2 );
                         this.modelRender.addInstance(this.agent, 'agent');
@@ -108,7 +171,6 @@ export class AnimationHandler{
                         case 4:
                         this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
                         this.modelRender.addInstance(this.goalObject, 'goal');
-                        this.map.set({x: ei, y: pi}, this.goalObject);
                         break;
     
                 }
@@ -127,9 +189,26 @@ export class AnimationHandler{
                 case "up": return ["y", 1];
                 case "down": return ["y", -1];
                 case "left": return ["x", -1];
-                case "right": return ["x", +1];
+                case "right": return ["x", 1];
             }
         });
+    }
+
+    public get movementArray() {
+        return this.movement.map( e => {
+            switch(e[0]) {
+                case "y":
+                    switch(e[1]) {
+                        case 1: return "up"
+                        case -1: return "down"
+                    }
+                case "x":
+                switch(e[1]) {
+                    case 1: return "right"
+                    case -1: return "left"
+                }
+            }
+        })
     }
 
     private initCameras() {
@@ -143,9 +222,6 @@ export class AnimationHandler{
     }
 
     private init3DObjects() {
-        // init map
-        this.objects = new Map();
-
          // get informations from simple cube
         const { vertices, indices, normals, textureCoords } = Cube;
 
@@ -182,34 +258,40 @@ export class AnimationHandler{
         const agent = new ModelType(vertices, indices, normals, textureCoords);
         agent.addMaterial(agentMat);
         this.modelRender.registerNewModel(agent, 'agent');
-
-        this.objects.set("wall", wall);
-        this.objects.set("none", none);
-        this.objects.set("goal", goal);
-        this.objects.set("start", start);
-        this.objects.set("agent", agent);
     }
 
     public run() {
         var lastUpdateTime;
         var move = 0; // save how far we moved
         const render = () => {
+
             var currentTime = new Date().getTime(); // current time for animations
             GLC.clear(1.0, 1.0, 1.0, 1.0); // clear the canvas
-            if(this.agent && this.movement.length && Array.isArray(this.movement)) { // in case we have an agent, and a movement with length and we want to ensure we have an array
+            // moving animation should only be played when the agent is moving
+            if(this.agent && this.movement.length && Array.isArray(this.movement) && this.isMoving) { // in case we have an agent, and a movement with length and we want to ensure we have an array
+
                 // we check for length, but in theorie everything can have a length property
                 if(lastUpdateTime) { // when we already updated, we want to go here
-                    var delta = currentTime - lastUpdateTime; // calculate our delta for the movement
-                    // first axis is axis, second is amount
-                    this.agent.move(this.movement[0][0], (this.movement[0][1] * delta) / 1000.0); // move the element on the specified axis ([0][0]) by the calculated amount
-                    move += (this.movement[0][1] * delta) / 1000.0; // update are move variable, so we know how far we already moved
-                    if((Math.abs(move)) >= Math.abs(this.movement[0][1])) { // check if we already have moved far enough: if so, drop the first element in the movement array and reset the move variable
+                    if(!this.canMove(this.agent.y, this.agent.x, this.movement[0][0], this.movement[0][1])) {
                         this.movement.shift();
-                        move = 0;
+                        this.action();
+                    } else {
+                        var delta = currentTime - lastUpdateTime; // calculate our delta for the movement
+                        // first axis is axis, second is amount
+                        this.agent.move(this.movement[0][0], (this.movement[0][1] * delta * this.movementSpeedMultiplier) / 1000.0); // move the element on the specified axis ([0][0]) by the calculated amount
+                        move += (this.movement[0][1] * delta * this.movementSpeedMultiplier) / 1000.0; // update are move variable, so we know how far we already moved
+                        if((Math.abs(move)) >= Math.abs(this.movement[0][1])) { // check if we already have moved far enough: if so, drop the first element in the movement array and reset the move variable
+                            this.movement.shift();
+                            this.action();
+                            move = 0;
+                        }
                     }
                 }   
-                lastUpdateTime = new Date().getTime(); // we now have updated, so we have to update our last update time
             }
+            // when there is no movement left, set is moving to false, since we're not moving anymore
+            if(this.isMoving && this.movement.length === 0) this.toggleMovement();
+
+            lastUpdateTime = new Date().getTime(); // we now have updated, so we have to update our last update time
             this.modelRender.render(this.lights.get("default"), this.cameras.get("default")); // call render function to render the new view
             window.requestAnimationFrame(render); // request the browser window for the next render process
         }

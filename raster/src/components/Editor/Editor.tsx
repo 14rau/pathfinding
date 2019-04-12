@@ -72,7 +72,7 @@ export class Editor extends Component<IEditorProps> {
             <div>
               <span className="detailBadge">Y: {this.props.pageStore.sizeY} X: {this.props.pageStore.sizeX} <br/></span>
               <div style={{display: "flex", flexDirection: "row"}}>
-                <Grid data={this.props.pageStore.mapData} type={this.editorState} onChange={this.onChangeData}/>
+                <Grid type={this.editorState} onChange={this.onChangeData}/>
               </div>
             </div>
             <div>
@@ -125,7 +125,9 @@ export class Editor extends Component<IEditorProps> {
     if([FieldType.AGENT, FieldType.START, FieldType.GOAL].includes(type)) {
       this.resetField(type);
     }
-    this.props.pageStore.mapData[y][x] = type;
+    let { mapData } = this.props.pageStore;
+    mapData[y][x] = type;
+    this.props.pageStore.updateMap(mapData);
   }
 
   // Helper functions -> May add an Utils script?
