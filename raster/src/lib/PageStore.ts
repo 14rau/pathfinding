@@ -3,10 +3,10 @@ import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
 
 export class PageStore {
-    @observable public sizeX = 5;
-    @observable public sizeY = 5;
+    @observable public sizeX = 20;
+    @observable public sizeY = 20;
     @observable public mapData = this.defaultTiles;
-    @observable public movement = ["left", "left", "left", "left", "left", "left", "left", "left", "left", "left", "up", "right", "up", "left" ];
+    @observable public movement = [];
     @observable public currentView = "mb";
     private registredViews: WebGL[] = [];
 
@@ -16,9 +16,9 @@ export class PageStore {
         for(let x = 0; x < this.sizeX; x++) {
           let xRow = [];
           for(let y = 0; y < this.sizeY; y++) {
-            //if(x === 0 || y === 0 || y === (this.sizeY - 1) || x === (this.sizeX - 1)) {
-            //  xRow.push(5);
-            //} else {
+            if(x === 0 || y === 0 || y === (this.sizeY - 1) || x === (this.sizeX - 1)) {
+              xRow.push(5);
+            } else {
               if(y === 3 && x === 4) {
                 xRow.push(3)
               } else if (x === 1 && y === 0) {
@@ -26,7 +26,7 @@ export class PageStore {
               } else {
                 xRow.push(0);
               }
-            //}
+            }
           }
           ret.push(xRow);
         }
