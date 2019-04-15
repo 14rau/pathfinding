@@ -7,7 +7,7 @@ import Light from '../LightSource';
 import Material from '../Materials/material';
 import Camera from '../Camera';
 import MouseEvent from '../EventHandlers/mouse';
-import { toJS } from 'mobx';
+import OBJ from 'webgl-obj-loader';
 import autobind from 'autobind-decorator';
 
 export class AnimationHandler{
@@ -55,7 +55,6 @@ export class AnimationHandler{
     }
     
     public toggleMovement() {
-        console.log(this.isMoving, "isMoving call")
         this.isMoving = !this.isMoving;
     }
 
@@ -115,23 +114,6 @@ export class AnimationHandler{
     public canMove(y, x, direction, movement) {
         y = Math.ceil(y);
         x = Math.ceil(x);
-        // y = this.map2d.length - y - 1;
-        // console.log("---------------")
-        // console.log("Current position: ", y, x)
-        // console.log("Next Position: ")
-        // switch(direction) {
-        //       case "y": console.log(y + movement, x); break;
-        //       case "x": console.log(y, x + movement); break;
-        //   }
-        // console.log("Field Type:")
-        // switch(direction) {
-        //       case "y": console.log((this.map2d[y + movement][x])); break
-        //       case "x": console.log((this.map2d[y][x+movement])); break;
-        //   }
-        // switch(direction) {
-        //     case "y": console.log (!((this.map2d[y + movement][x] === 1) || this.map2d[y + movement][x] == null)); break;
-        //     case "x": console.log (!((this.map2d[y][x + movement] === 1) || (this.map2d[y][x + movement] == null))); break;
-        // }
         try {
           switch(direction) {
                 case "y": return !((this.map2d[y + movement][x] === 1) || this.map2d[y + movement][x] == null)
@@ -222,6 +204,8 @@ export class AnimationHandler{
     }
 
     private init3DObjects() {
+        
+
          // get informations from simple cube
         const { vertices, indices, normals, textureCoords } = Cube;
 
