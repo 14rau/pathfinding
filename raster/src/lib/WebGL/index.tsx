@@ -19,6 +19,10 @@ export class WebGL extends React.Component<IWebGLProps>{
         super(props);
         this.props.pageStore.register(this);
     }
+
+    componentDidUpdate() {
+        this.animationHandler.updateMovementPath(toJS(this.props.pageStore.movement))
+    }
     
     componentDidMount(){
         console.log("called did mount")

@@ -39,6 +39,13 @@ export class PageStore {
         this.currentView = str;
     }
 
+    @autobind
+    @action
+    public setMovement(movement: string[]) {
+      this.movement = movement;
+      this.registredViews.forEach(e => e.forceUpdate())
+    }
+
     public register(view: WebGL){
       this.registredViews.push(view)
     }

@@ -41,6 +41,7 @@ class App extends Component<IAppProps> {
     try {
       let request = await this.apiController.post("pathfinding", {data: toJS(this.props.pageStore.mapData)});
       this.props.pageStore.movement = request.data;
+      // this.props.pageStore.setMovement(["up", "up"]);
     } catch (err) {
       alert("Sorry, an error occured");
       console.error(err);
