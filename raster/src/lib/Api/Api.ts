@@ -10,7 +10,7 @@ export class ApiController{
                 method: type,
                 mode: "cors",
                 headers: {
-                    "Content-Type": "application/json"
+                    "csrf-token": "nc98P987bcpncYhoadjoiydc9ajDlcn"
                 },
                 body: JSON.stringify(data)
             });
@@ -23,7 +23,7 @@ export class ApiController{
             );
             return json;
         } catch (err) {
-            alert("Sorry, an error occured")
+            throw err;
         }
     }
 

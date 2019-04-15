@@ -1,19 +1,23 @@
 import * as React from "react";
 import { Tile, FieldType } from "../Tile/Tile";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
+import { PageStore } from "../../../lib/PageStore";
 
 
 export interface IGridProps{
-    data: number[][];
     type: FieldType;
     onChange: (y: number, x: number, type: FieldType) => void;
+
+    // injected
+    pageStore?: PageStore;
 }
 
+@inject("pageStore")
 @observer
 export class Grid extends React.Component<IGridProps>{
     public render() {
         return <div>
-            {this.props.data.map((e, y) => <React.Fragment key={y}> {e.map((p, x) => <Tile position={{x,y}} key={`${x}/${y}`} onClick={() => this.props.onChange(y, x, this.props.type)} type={p} />)} <br/> </React.Fragment>)}
+            {this.props.pageStore.mapData.map((e, y) => <React.Fragment key={y}> {e.map((p, x) => <Tile position={{x,y}} key={`${x}/${y}`} onClick={() => this.props.onChange(y, x, this.props.type)} type={p} />)} <br/> </React.Fragment>)}
         </div>
     }
 }
