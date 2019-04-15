@@ -26,7 +26,7 @@ export class AnimationHandler{
         x: 0
     }
 
-    private movementSpeedMultiplier = 2;
+    private movementSpeedMultiplier = 4;
 
     // we don't want the isMoving variable to be changed from the outside, so we take a getter
     public get moving() {
