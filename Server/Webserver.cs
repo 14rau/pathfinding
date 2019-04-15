@@ -56,7 +56,7 @@ namespace Server
                             }
                             catch {
                                 context.Response.StatusCode = 404;
-                            } 
+                            }
                             finally
                             {
                                 context.Response.OutputStream.Close();

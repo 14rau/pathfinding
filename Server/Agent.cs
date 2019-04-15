@@ -62,13 +62,13 @@ namespace Server
             foreach(string movement in createMovementPath())
             {
                 if (movement.Equals("Left"))
-                    frontendMovement.Add("Up");
+                    frontendMovement.Add("up");
                 if (movement.Equals("Right"))
-                    frontendMovement.Add("Down");
+                    frontendMovement.Add("down");
                 if (movement.Equals("Up"))
-                    frontendMovement.Add("Left");
+                    frontendMovement.Add("left");
                 if (movement.Equals("Down"))
-                    frontendMovement.Add("Right");
+                    frontendMovement.Add("right");
             }
             return frontendMovement.ToArray();
         }
