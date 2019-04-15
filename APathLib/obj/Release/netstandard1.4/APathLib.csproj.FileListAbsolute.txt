@@ -1,0 +1,8 @@
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\bin\Release\netstandard1.4\APathLib.deps.json
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\bin\Release\netstandard1.4\APathLib.dll
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\bin\Release\netstandard1.4\APathLib.pdb
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\obj\Release\netstandard1.4\APathLib.csproj.CoreCompileInputs.cache
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\obj\Release\netstandard1.4\APathLib.AssemblyInfo.cs
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\obj\Release\netstandard1.4\APathLib.dll
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\obj\Release\netstandard1.4\APathLib.pdb
+C:\Users\artzh\Dropbox\School Projects\APathLib\APathLib\obj\Release\netstandard1.4\APathLib.AssemblyInfoInputs.cache
