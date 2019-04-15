@@ -31,7 +31,7 @@ class App extends Component<IAppProps> {
       <Tab id="ng" title="Editor" panel={<Editor />} />
       <Tab id="mb" title="3d - View" panel={<WebGL />} />
     </Tabs>
-    <Button text="Send Request" onClick={this.sendData}/>
+    <Button text="Send Requests" onClick={this.sendData}/>
     </>
   }
 
