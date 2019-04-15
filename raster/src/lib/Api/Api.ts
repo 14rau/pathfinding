@@ -8,9 +8,9 @@ export class ApiController{
         try {
             let res = await fetch(`${this.protocoll}://${this.apihost}:${this.apiport}/${path}`, {
                 method: type,
-                mode: "cors",
                 headers: {
-                    "csrf-token": "nc98P987bcpncYhoadjoiydc9ajDlcn"
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data)
             });

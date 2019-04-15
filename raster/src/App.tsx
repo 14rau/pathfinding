@@ -6,7 +6,7 @@ import { Tabs, Tab, Button } from "@blueprintjs/core";
 import { WebGL } from "./lib/WebGL";
 import { PageStore } from "./lib/PageStore";
 import { ApiController } from "./lib/Api/Api";
-import { observable } from "mobx";
+import { observable, toJS } from "mobx";
 import { Loading } from "./components/Loading/Loading";
 import autobind from "autobind-decorator";
 
@@ -39,7 +39,7 @@ class App extends Component<IAppProps> {
   private async sendData() {
     this.loading = true;
     try {
-      let request = await this.apiController.post("pathfinding/", this.props.pageStore.mapData);
+      let request = await this.apiController.post("pathfinding", {data: toJS(this.props.pageStore.mapData)});
       this.props.pageStore.movement = request.data;
     } catch (err) {
       alert("Sorry, an error occured");
