@@ -43,7 +43,7 @@ export class PageStore {
     @action
     public setMovement(movement: string[]) {
       this.movement = movement;
-      this.registredViews.forEach(e => e.forceUpdate())
+      this.registredViews.forEach(e => e.update())
     }
 
     public register(view: WebGL){
