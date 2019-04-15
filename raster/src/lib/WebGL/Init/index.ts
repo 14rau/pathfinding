@@ -113,6 +113,7 @@ export class AnimationHandler{
     }
 
     public canMove(y, x, direction, movement) {
+        return true;
         y = Math.ceil(y);
         x = Math.ceil(x);
         // y = this.map2d.length - y - 1;
