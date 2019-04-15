@@ -29,7 +29,7 @@ namespace APathLib
         /// <summary>
         /// Initializes a new field (map) with given/default flags
         /// </summary>
-        /// <param name="map">Map matrix (yx)</param>
+        /// <param name="map">Map matrix</param>
         /// <param name="flags">Collection of flag descriptors. By default: 0 - walkable, 1 - obstacle, 3 - start, 4 - goal</param>
         public Field(int[][] map, Flags flags = null)
         {
@@ -49,7 +49,7 @@ namespace APathLib
             IEnumerable<int> goalSquareRef = mapList.Where(sq => sq == this.flags.getFlag(FlagTag.GOAL));
             if (startSquareRef.Count() == 0 || goalSquareRef.Count() == 0)
                 throw new ArgumentException("No 'START' or/and 'GOAL' flags found");
-            else if (startSquareRef.Count() > 1 || goalSquareRef.Count() > 1)
+            else if(startSquareRef.Count() > 1 || goalSquareRef.Count() > 1)
                 throw new ArgumentException("To many 'START' and/or 'GOAL' flags");
 
             int startPositionMapIndex = mapList.IndexOf(startSquareRef.First());
@@ -74,8 +74,8 @@ namespace APathLib
         public IEnumerable<Position> findBest(int maxTries = 100, bool includeStartSquare = false)
         {
             //Declare search queues
-            Queue<Square> openQueue = new Queue<Square>();
-            Queue<Square> closedQueue = new Queue<Square>();
+            List<Square> openQueue = new List<Square>();
+            List<Square> closedQueue = new List<Square>();
 
             //Define current (currently checked) square
             Square currentSquare = null;
@@ -87,7 +87,7 @@ namespace APathLib
             bool pathFound = false;
 
             //Add start square to the open queue
-            openQueue.Enqueue(startSquare);
+            openQueue.Add(startSquare);
 
             while (openQueue.Count > 0 && maxTries > tryCounter)
             {
@@ -95,9 +95,9 @@ namespace APathLib
                 currentSquare = openQueue.Min();
 
                 //Add current square to the closed queue & remove it from the open queue
-                closedQueue.Enqueue(currentSquare);
+                closedQueue.Add(currentSquare);
                 //Remove first element of the queue which is currentSquare
-                openQueue.Dequeue();
+                openQueue.Remove(currentSquare);
 
                 //Check if current square is a goal square -> break loop
                 if (currentSquare.EqualTo(goalSquare))
@@ -117,15 +117,14 @@ namespace APathLib
                     if (closedQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY) != null)
                         return;
 
-                    //Check if this square is in the open list
-                    if (closedQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY) == null)
+                    //Check if this square is in the open queue
+                    if(openQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY) == null)
                     {
                         //Update costs
                         sq.update(currentSquare, this.goalSquare, gCost);
                         //Add to the open queue
-                        openQueue.Enqueue(sq);
-                    }
-                    else
+                        openQueue.Add(sq);
+                    }else
                     {
                         //If current F-Cost is better than previous value -> update
                         if (gCost + sq.hCost < sq.fCost)
