@@ -49,8 +49,8 @@ namespace APathLib
             if (this.fCost > square.fCost) return 1;
             else if (this.fCost < square.fCost) return -1;
             //If equal -> compare H-Costs
-            else if (this.hCost > square.hCost) return 1;
-            else if (this.hCost < square.hCost) return -1;
+            else if (this.hCost < square.hCost) return 1;
+            else if (this.hCost > square.hCost) return -1;
             //If still equal
             else return 0;
         }
