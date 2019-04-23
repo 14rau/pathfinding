@@ -8,10 +8,22 @@ namespace Server
         private Position position;
         private List<Position> knownPositions;
 
+        public Agent()
+        {
+            knownPositions = new List<Position>();
+        }
+
         public Agent(Position startPosition)
         {
             this.position = startPosition;
             knownPositions = new List<Position>();
+            knownPositions.Add(position);
+        }
+
+        public void reset(Position position)
+        {
+            knownPositions.Clear();
+            this.position = position;
             knownPositions.Add(position);
         }
 
@@ -70,7 +82,7 @@ namespace Server
             return frontendMovement.ToArray();
         }
 
-        private void clearUselessPathOptions()
+        public virtual void clearUselessPathOptions()
         {
             if (knownPositions.Contains(position))
             {

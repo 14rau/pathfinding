@@ -2,10 +2,9 @@
 
 namespace Server
 {
-    class PathfindingEngine : APathfindingEngine
+    class RandomEngine : APathfindingEngine
     {
-
-        public PathfindingEngine(int[][] map):base(map,new Agent())
+        public RandomEngine(int[][] map) : base(map,new RandomAgent())
         {
         }
 
@@ -19,22 +18,25 @@ namespace Server
                 if (valueMap[agentPosX][agentPosY]++ > 100)
                     break;
 
+                Random random = new Random(DateTime.Now.Millisecond);
+                random.Next(1000);
+
                 int left, right, up, down;
 
                 if (agentPosX > 0)
-                    left = valueMap[agentPosX - 1][agentPosY] * agent.getPosition().getLeft().getDistanceTo(goalPos);
+                    left = valueMap[agentPosX - 1][agentPosY] * random.Next(1,1000); 
                 else left = 0;
                 if (agentPosX < valueMap.Length - 1)
-                    right = valueMap[agentPosX + 1][agentPosY] * agent.getPosition().getRight().getDistanceTo(goalPos);
+                    right = valueMap[agentPosX + 1][agentPosY] * random.Next(1,1000); 
                 else right = 0;
                 if (agentPosY > 0)
-                    up = valueMap[agentPosX][agentPosY - 1] * agent.getPosition().getUp().getDistanceTo(goalPos);
+                    up = valueMap[agentPosX][agentPosY - 1] * random.Next(1,1000); 
                 else up = 0;
                 if (agentPosY < valueMap[agentPosX].Length - 1)
-                    down = valueMap[agentPosX][agentPosY + 1] * agent.getPosition().getDown().getDistanceTo(goalPos);
+                    down = valueMap[agentPosX][agentPosY + 1] * random.Next(1,1000);
                 else down = 0;
 
-                switch (getBestDirection(right,left,up,down))
+                switch (getBestDirection(right, left, up, down))
                 {
                     case RIGHT:
                         agent.goRight();
@@ -51,10 +53,9 @@ namespace Server
                     default:
                         break;
                 }
-                
+
             }
             return agent.getPath();
         }
-
     }
 }
