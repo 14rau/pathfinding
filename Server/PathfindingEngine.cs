@@ -33,7 +33,7 @@ namespace Server
                     if (map[x][y] == 1 || map[x][y] == 5)
                         valueMap[x][y] = 0;
                     else
-                        valueMap[x][y] = 1;
+                        valueMap[x][y] = valueMap.Length+valueMap[0].Length;
 
                     if (map[x][y] == 3)
                     {
@@ -61,16 +61,16 @@ namespace Server
                 int left, right, up, down;
 
                 if (agentPosX > 0)
-                    left = valueMap[agentPosX - 1][agentPosY] * (Math.Abs((agentPosX-1)-goalPos.getX())+1);
+                    left = valueMap[agentPosX - 1][agentPosY] * agent.getPosition().getLeft().getDistanceTo(goalPos);
                 else left = 0;
                 if (agentPosX < valueMap.Length - 1)
-                    right = valueMap[agentPosX + 1][agentPosY] * (Math.Abs((agentPosX + 1) - goalPos.getX())+1);
+                    right = valueMap[agentPosX + 1][agentPosY] * agent.getPosition().getRight().getDistanceTo(goalPos);
                 else right = 0;
                 if (agentPosY > 0)
-                    up = valueMap[agentPosX][agentPosY - 1] * (Math.Abs((agentPosY - 1) - goalPos.getY())+1);
+                    up = valueMap[agentPosX][agentPosY - 1] * agent.getPosition().getUp().getDistanceTo(goalPos);
                 else up = 0;
                 if (agentPosY < valueMap[agentPosX].Length - 1)
-                    down = valueMap[agentPosX][agentPosY + 1] * (Math.Abs((agentPosY + 1) - goalPos.getY())+1);
+                    down = valueMap[agentPosX][agentPosY + 1] * agent.getPosition().getDown().getDistanceTo(goalPos);
                 else down = 0;
 
                 switch (getBestDirection(right,left,up,down))

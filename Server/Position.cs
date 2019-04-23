@@ -1,4 +1,6 @@
-﻿namespace Server
+﻿using System;
+
+namespace Server
 {
     class Position
     {
@@ -46,6 +48,11 @@
             return position != null &&
                    x == position.x &&
                    y == position.y;
+        }
+
+        public int getDistanceTo(Position target)
+        {
+           return (Math.Abs((x) - target.getX()) + Math.Abs((y) - target.getY()));
         }
     }
 }
