@@ -23,17 +23,18 @@ namespace Server
 
                 int left, right, up, down;
 
-                if (agentPosX > 0)
-                    left = valueMap[agentPosX - 1][agentPosY] * random.Next(1,1000); 
+                Position checkingPosition = agent.getPosition();
+                if (!isWall(checkingPosition.getLeft()))
+                    left = random.Next(1,1000); 
                 else left = 0;
-                if (agentPosX < valueMap.Length - 1)
-                    right = valueMap[agentPosX + 1][agentPosY] * random.Next(1,1000); 
+                if (!isWall(checkingPosition.getRight()))
+                    right = random.Next(1, 1000);
                 else right = 0;
-                if (agentPosY > 0)
-                    up = valueMap[agentPosX][agentPosY - 1] * random.Next(1,1000); 
+                if (!isWall(checkingPosition.getUp()))
+                    up = random.Next(1, 1000);
                 else up = 0;
-                if (agentPosY < valueMap[agentPosX].Length - 1)
-                    down = valueMap[agentPosX][agentPosY + 1] * random.Next(1,1000);
+                if (!isWall(checkingPosition.getDown()))
+                    down = random.Next(1, 1000);
                 else down = 0;
 
                 switch (getBestDirection(right, left, up, down))
@@ -56,6 +57,13 @@ namespace Server
 
             }
             return agent.getPath();
+        }
+
+        private Boolean isWall(Position pos)
+        {
+            if(pos.getX() <0 || pos.getY() <0|| pos.getX() > valueMap.Length - 1||pos.getY() > valueMap[0].Length - 1 )
+                return true;
+            return valueMap[pos.getX()][pos.getY()] == 0;
         }
     }
 }
