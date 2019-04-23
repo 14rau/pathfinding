@@ -8,6 +8,7 @@ export class PageStore {
     @observable public mapData = this.defaultTiles;
     @observable public movement = [];
     @observable public currentView = "mb";
+    @observable public algorithm = 3;
     private registredViews: WebGL[] = [];
 
     public get defaultTiles() {

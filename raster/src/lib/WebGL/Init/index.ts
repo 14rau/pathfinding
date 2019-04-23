@@ -7,7 +7,6 @@ import Light from '../LightSource';
 import Material from '../Materials/material';
 import Camera from '../Camera';
 import MouseEvent from '../EventHandlers/mouse';
-import { toJS } from 'mobx';
 import autobind from 'autobind-decorator';
 
 export class AnimationHandler{
