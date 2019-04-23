@@ -63,12 +63,10 @@ class App extends Component<IAppProps> {
   private async sendData() {
     this.loading = true;
     try {
-      let request = await this.apiController.post("pathfinding", {data: 
-        {
+      let request = await this.apiController.post("pathfinding", {
           map: toJS(this.props.pageStore.mapData),
           algorithm: toJS(this.props.pageStore.algorithm),
           settings: [ 0, 1, 2, 4 ]
-        }
       });
       this.props.pageStore.setMovement(request.data);
       // this.props.pageStore.setMovement(["up", "up"]);
