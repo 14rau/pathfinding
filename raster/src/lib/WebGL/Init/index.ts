@@ -266,9 +266,11 @@ export class AnimationHandler{
                     // first axis is axis, second is amount
                     this.agent.move(this.movement[0][0], this.movement[0][1]); // move the element on the specified axis ([0][0]) by the calculated amount
                     this.movement.shift();
-                    this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x] = 6;
-                    this.createInitialScene();
-                    this.action();
+                    if(![3, 4].includes(this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x])) {
+                        this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x] = 6;
+                        this.createInitialScene();
+                        this.action();
+                    }
                 }
                  
             }

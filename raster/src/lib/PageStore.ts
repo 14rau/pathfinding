@@ -60,7 +60,6 @@ export class PageStore {
     @autobind
     @action
     public updateMap(mapData) {
-      console.log("updated map")
       this.forceUpdate();
       this.mapData = mapData;
     }
