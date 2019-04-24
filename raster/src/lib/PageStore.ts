@@ -6,7 +6,7 @@ export class PageStore {
     @observable public sizeX = 20;
     @observable public sizeY = 20;
     @observable public mapData = this.defaultTiles;
-    @observable public movement = [];
+    @observable public movement = ["right", "right", "right", "right", "right", "right" ];
     @observable public currentView = "mb";
     @observable public algorithm = 3;
     private registredViews: WebGL[] = [];
@@ -51,9 +51,9 @@ export class PageStore {
       this.registredViews.push(view)
     }
 
-    public forceUpdate(newMap) {
+    public forceUpdate() {
       this.registredViews.forEach(e => {
-        e.animationHandler.updateMap(newMap);
+        e.animationHandler.updateMap();
       });
     }
 
@@ -61,7 +61,7 @@ export class PageStore {
     @action
     public updateMap(mapData) {
       console.log("updated map")
-      this.forceUpdate(mapData);
+      this.forceUpdate();
       this.mapData = mapData;
     }
 }

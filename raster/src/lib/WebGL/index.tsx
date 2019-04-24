@@ -48,17 +48,26 @@ export class WebGL extends React.Component<IWebGLProps>{
     }
     
     render() { 
-        return <div>
+        return <div style={{display: "flex", flexDirection: "row"}}>
             <canvas id="webgl" width="800" height="800" style={{ border: '1px solid black'}}></canvas>
-            <Button
-                onClick={
-                    this.animationHandler ?
-                    () => this.animationHandler.resetMovement() :
-                    () => {}}
-                text="Reset Agent"
-            />
-            <Button onClick={this.animationHandler ? () => this.animationHandler.toggleMovement() : () => {}} text={`${this.animationHandler && this.animationHandler.moving ? "Stop" : "Start" } Movement`}/>
-            {JSON.stringify(this.animationHandler ? this.animationHandler.movementArray : "")}
+            <div>
+                <div>
+                    <Button
+                        onClick={
+                            this.animationHandler ?
+                            () => this.animationHandler.resetMovement() :
+                            () => {}}
+                        text="Reset Agent"
+                    />
+                    <Button onClick={this.animationHandler ? () => this.animationHandler.toggleMovement() : () => {}} text={`${this.animationHandler && this.animationHandler.moving ? "Stop" : "Start" } Movement`}/>
+                </div>
+                <ul style={{listStyleType: "none"}}>
+                    {this.animationHandler ? this.animationHandler.movementArray.map(e =>
+                        <li style={{padding: "8px 6px", border: "1px solid white", color: "white", background: "#33b5e5"}}>{e}</li>
+                    )
+                    : ""}
+                </ul>
+            </div>
         </div>
     }
 }

@@ -7,6 +7,7 @@ import { Utils } from "../../lib/Util";
 import { Grid } from "./Grid/Grid";
 import { Hints } from "./Hints/Hints";
 import { PageStore } from "../../lib/PageStore";
+import { Button } from "@blueprintjs/core";
 
 
 
@@ -55,7 +56,12 @@ export class Editor extends Component<IEditorProps> {
           <div style={{display: "flex", flexDirection: "row"}}>
             <div className="side">
                 <div className="btn" style={{marginTop: "16px"}} onClick={() => console.log(JSON.stringify(this.props.pageStore.mapData))}>show in console</div>
-                <div className="btn" onClick={() => this.props.pageStore.mapData = JSON.parse(this.matrixInput)}>load matrix</div>
+                <Button text="load matrix" onClick={() => {
+                  this.props.pageStore.mapData = JSON.parse(this.matrixInput)
+                  this.props.pageStore.forceUpdate();
+                  }}>
+                    
+                  </Button>
                 <select style={{width: "100%"}} onChange={e => this.editorState = parseInt(e.target.value)}>
                   {this.options.map(e => <option value={e.value}>{e.label}</option>)}
                 </select>

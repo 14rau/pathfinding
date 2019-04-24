@@ -17,7 +17,7 @@ export default `
         if(${Locations.HAS_DIFFUSE_TEXTURE} == 1) {
             return texture2D(${Locations.DIFFUSE_TEXTURE},pass_textureCoords);
         }
-        return vec4(0.4, 0.4, 0.4, 1.0);
+        return vec4(1.0, 0.4, 0.4, 1.0);
     }
 
     float _nDot() {
