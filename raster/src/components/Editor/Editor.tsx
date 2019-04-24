@@ -57,8 +57,12 @@ export class Editor extends Component<IEditorProps> {
             <div className="side">
                 <div className="btn" style={{marginTop: "16px"}} onClick={() => console.log(JSON.stringify(this.props.pageStore.mapData))}>show in console</div>
                 <Button text="load matrix" onClick={() => {
-                  this.props.pageStore.mapData = JSON.parse(this.matrixInput)
-                  this.props.pageStore.forceUpdate();
+                    let mapData = JSON.parse(this.matrixInput)
+                    mapData.forEach((y, yi) => {
+                      y.forEach((x, xi) => {
+                        this.onChangeData(yi, xi, x);
+                      })
+                    })
                   }}>
                     
                   </Button>
