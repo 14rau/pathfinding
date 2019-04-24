@@ -41,6 +41,8 @@ class App extends Component<IAppProps> {
       <Radio label="Djakstra" value={2} />
       <Radio label="Genetic - Feed-forward Network" value={3} />
       <Radio label="Selfmade" value={4} />
+      <Radio label="IDGAF" value={5} />
+      <Radio label="Placeholder" value={6} />
     </RadioGroup>
     <Button text="Send Requests" onClick={this.sendData}/>
     </>
