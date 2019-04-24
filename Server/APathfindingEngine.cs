@@ -23,7 +23,7 @@ namespace Server
              * 4 = goal
              * 5 = fixed wall (not drawable or removable from user -> outer frame)
              **/
-            public APathfindingEngine(int[][] map, Agent agent)
+            public APathfindingEngine(int[][] map)
             {
                 valueMap = new int[map.Length][];
                 for (int x = 0; x < map.Length; x++)
@@ -38,8 +38,7 @@ namespace Server
 
                         if (map[x][y] == 3)
                         {
-                        this.agent = agent;
-                        agent.reset(new Position(x,y));
+                        agent = new Agent(new Position(x,y));
                     }
 
                         if (map[x][y] == 4)

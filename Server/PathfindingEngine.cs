@@ -5,7 +5,7 @@ namespace Server
     class PathfindingEngine : APathfindingEngine
     {
 
-        public PathfindingEngine(int[][] map):base(map,new Agent())
+        public PathfindingEngine(int[][] map):base(map)
         {
         }
 
@@ -13,6 +13,28 @@ namespace Server
         {
             while (!agent.getPosition().Equals(goalPos))
             {
+
+                if (agent.getPosition().getLeft().Equals(goalPos))
+                {
+                    agent.goLeft();
+                    break;
+                }
+                if (agent.getPosition().getRight().Equals(goalPos))
+                {
+                    agent.goRight();
+                    break;
+                }
+                if (agent.getPosition().getUp().Equals(goalPos))
+                {
+                    agent.goUp();
+                    break;
+                }
+                if (agent.getPosition().getDown().Equals(goalPos))
+                {
+                    agent.goDown();
+                    break;
+                }
+
                 int agentPosX = agent.getPosition().getX();
                 int agentPosY = agent.getPosition().getY();
 

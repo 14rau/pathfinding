@@ -4,7 +4,7 @@ namespace Server
 {
     class RandomEngine : APathfindingEngine
     {
-        public RandomEngine(int[][] map) : base(map,new RandomAgent())
+        public RandomEngine(int[][] map) : base(map)
         {
         }
 
@@ -16,7 +16,7 @@ namespace Server
                 int agentPosX = agent.getPosition().getX();
                 int agentPosY = agent.getPosition().getY();
 
-                if (valueMap[agentPosX][agentPosY]++ > 100)
+                if (valueMap[agentPosX][agentPosY]++ > 10000)
                     break;
 
                 int left, right, up, down;
