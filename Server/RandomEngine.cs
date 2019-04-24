@@ -10,6 +10,7 @@ namespace Server
 
         public override string[] calculatePath()
         {
+            Random random = new Random(DateTime.Now.Millisecond);
             while (!agent.getPosition().Equals(goalPos))
             {
                 int agentPosX = agent.getPosition().getX();
@@ -17,9 +18,6 @@ namespace Server
 
                 if (valueMap[agentPosX][agentPosY]++ > 100)
                     break;
-
-                Random random = new Random(DateTime.Now.Millisecond);
-                random.Next(1000);
 
                 int left, right, up, down;
 
