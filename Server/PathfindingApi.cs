@@ -16,6 +16,12 @@
             return engine.calculatePath();
         }
 
+        
+        public static string[] calculatePathDumb(int[][] map)
+        {
+            APathfindingEngine engine = new DumbEngine(map);
+            return engine.calculatePath();
+        }
         public static string[] calculatePathRandom(int[][] map)
         {
             APathfindingEngine engine = new RandomEngine(map);

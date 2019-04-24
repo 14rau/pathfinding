@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Agent.cs" />
     <Compile Include="APathfindingEngine.cs" />
+    <Compile Include="DumbEngine.cs" />
     <Compile Include="PathfindingApi.cs" />
     <Compile Include="PathfindingEngine.cs" />
     <Compile Include="Position.cs" />
