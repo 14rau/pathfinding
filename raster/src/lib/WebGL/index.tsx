@@ -48,7 +48,7 @@ export class WebGL extends React.Component<IWebGLProps>{
     }
     
     render() { 
-        return <div style={{display: "flex", flexDirection: "row"}}>
+        return <div style={{display: "-webkit-box"}}>
             <canvas id="webgl" width="800" height="800" style={{ border: '1px solid black'}}></canvas>
             <div>
                 <div>
@@ -61,7 +61,7 @@ export class WebGL extends React.Component<IWebGLProps>{
                     />
                     <Button onClick={this.animationHandler ? () => this.animationHandler.toggleMovement() : () => {}} text={`${this.animationHandler && this.animationHandler.moving ? "Stop" : "Start" } Movement`}/>
                 </div>
-                <ul style={{listStyleType: "none"}}>
+                <ul style={{listStyleType: "none", overflow: "auto", maxHeight: "750px"}}>
                     {this.animationHandler ? this.animationHandler.movementArray.map(e =>
                         <li style={{padding: "8px 6px", border: "1px solid white", color: "white", background: "#33b5e5"}}>{e}</li>
                     )

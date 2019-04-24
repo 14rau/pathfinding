@@ -136,6 +136,7 @@ export class Editor extends Component<IEditorProps> {
       this.resetField(type);
     }
     let { mapData } = this.props.pageStore;
+    this.replaceTiles(FieldType.PATH, FieldType.NOTHING, mapData);
     mapData[y][x] = type;
     this.props.pageStore.updateMap(mapData);
   }

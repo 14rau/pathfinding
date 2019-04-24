@@ -7,6 +7,7 @@ export enum FieldType {
     START,
     GOAL,
     BLOCKED,
+    PATH
 
 }
 

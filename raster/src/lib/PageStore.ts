@@ -6,7 +6,7 @@ export class PageStore {
     @observable public sizeX = 20;
     @observable public sizeY = 20;
     @observable public mapData = this.defaultTiles;
-    @observable public movement = [];
+    @observable public movement = ["right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right", ];
     @observable public currentView = "mb";
     @observable public algorithm = 3;
     private registredViews: WebGL[] = [];
