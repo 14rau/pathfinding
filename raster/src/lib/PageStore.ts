@@ -3,8 +3,8 @@ import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
 
 export class PageStore {
-    @observable public sizeX = 40;
-    @observable public sizeY = 40;
+    @observable public sizeX = 20;
+    @observable public sizeY = 20;
     @observable public mapData = this.defaultTiles;
     @observable public movement = ["right", "right", "right", "right", "right", "right", ];
     @observable public currentView = "mb";

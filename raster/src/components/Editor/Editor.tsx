@@ -39,16 +39,20 @@ export class Editor extends Component<IEditorProps> {
 
   private options = [{
     label: "Wall",
-    value: FieldType.WALL
+    value: FieldType.WALL,
+    color: "black"
   }, {
     label: "None",
-    value: FieldType.NOTHING
+    value: FieldType.NOTHING,
+    color: "grey"
   }, {
     label: "Goal",
-    value: FieldType.GOAL
+    value: FieldType.GOAL,
+    color: "green"
   }, {
     label: "Start",
-    value: FieldType.START
+    value: FieldType.START,
+    color: "yellow"
   },]
 
   public render() {
@@ -80,27 +84,32 @@ export class Editor extends Component<IEditorProps> {
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div className="side">
             <div className="btn" style={{ marginTop: "16px" }} onClick={() => console.log(JSON.stringify(this.props.pageStore.mapData))}>show in console</div>
-            <Button text="load matrix" onClick={() => {
-              let mapData = JSON.parse(JSON.parse(toJS(this.mapLoader)))
-              mapData.forEach((y, yi) => {
-                (y as any).forEach((x, xi) => {
-                  this.onChangeData(yi, xi, x);
-                })
-              })
-            }}>
 
-            </Button>
-
-            <Button text="import matrix" onClick={() => {
-              this.showImport = true;
-            }}>
-
-            </Button>
+    
             {/* Tileselect */}
-            <select style={{ width: "100%" }} onChange={e => this.editorState = parseInt(e.target.value)}>
-              {this.options.map(e => <option value={e.value}>{e.label}</option>)}
-            </select>
+            <h4>Tiles</h4>
+            <div style={{display: "flex", flexDirection: "column"}}>
+              {this.options.map(e => <Button style={{border: `2px solid ${e.color}`}} active={this.editorState === e.value} text={e.label} onClick={() => this.editorState = e.value}/>)}
+            </div>
+            
             {/* Mapselect */}
+            <h4>Maps</h4>
+            <div style={{display: "flex", flexDirection: "column"}}>
+              <Button text="load matrix" onClick={() => {
+                let mapData = JSON.parse(JSON.parse(toJS(this.mapLoader)))
+                mapData.forEach((y, yi) => {
+                  (y as any).forEach((x, xi) => {
+                    this.onChangeData(yi, xi, x);
+                  })
+                })
+              }}>
+
+              </Button>
+
+              <Button text="import matrix" onClick={() => {
+                this.showImport = true;
+              }}/>
+            </div>
             <select style={{ width: "100%" }} onChange={e => this.mapLoader = e.target.value}>
               {maps.map(e => <option value={JSON.stringify(e.map)}>{e.name}</option>)}
             </select>
