@@ -167,7 +167,7 @@ export class Editor extends Component<IEditorProps> {
   @autobind
   private onChangeData(y: number, x: number, type: FieldType) {
     // there can only be one agent, one start and one goal
-    if ([FieldType.AGENT, FieldType.START, FieldType.GOAL].includes(type)) {
+    if ([FieldType.START].includes(type)) {
       this.resetField(type);
     }
 
