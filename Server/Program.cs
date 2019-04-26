@@ -49,6 +49,8 @@ namespace Server
                     return PathfindingApi.calculateArtem3(mapArray);
                 case 4:
                     return PathfindingApi.calculatePathOwn(mapArray);
+                case 5:
+                    return PathfindingApi.calculatePathDumb(mapArray);
                 default:
                     return PathfindingApi.calculatePathOwn(mapArray);
 
