@@ -52,7 +52,6 @@ export class AnimationHandler{
     }
     
     public toggleMovement() {
-        console.log(this.isMoving, "isMoving call")
         this.isMoving = !this.isMoving;
     }
 
@@ -126,6 +125,7 @@ export class AnimationHandler{
         // clear instances
         this.modelRender.models["wall"].instances = [];
         this.modelRender.models["none"].instances = [];
+        this.modelRender.models["top"].instances = [];
         this.map2d.forEach((e, ei) => {
             e.forEach((p, pi) => {
                 switch(p) {
@@ -151,10 +151,8 @@ export class AnimationHandler{
                         }
                         break;
                     case 4:
-                        if(!this.goalObject) {
-                            this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
-                            this.modelRender.addInstance(this.goalObject, 'goal');
-                        }
+                        this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(this.goalObject, 'goal');
                         break;
                     case 6:
                         const path = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
@@ -240,7 +238,7 @@ export class AnimationHandler{
     
         // Goal
         const goalMat = new Material();
-        goalMat.addDiffuse(require('../resources/goal.jpg'));
+        goalMat.addDiffuse(require('../resources/cityhead.png'));
         const goal = new ModelType(vertices, indices, normals, textureCoords);
         goal.addMaterial(goalMat);
         this.modelRender.registerNewModel(goal, 'goal');

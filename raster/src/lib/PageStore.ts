@@ -3,8 +3,8 @@ import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
 
 export class PageStore {
-    @observable public sizeX = 40;
-    @observable public sizeY = 40;
+    @observable public sizeX = 20;
+    @observable public sizeY = 20;
     @observable public mapData = this.defaultTiles;
     @observable public movement = ["right", "right", "right", "right", "right", "right", ];
     @observable public currentView = "mb";
@@ -18,14 +18,17 @@ export class PageStore {
           let xRow = [];
           for(let y = 0; y < this.sizeY; y++) {
             if(x === 0 || y === 0 || y === (this.sizeY - 1) || x === (this.sizeX - 1)) {
-              xRow.push(5);
+              xRow.push(1);
             } else {
+              
               if(y === 3 && x === 4) {
                 xRow.push(3)
               } else if (x === 1 && y === 0) {
                 xRow.push(4);
+              } else if(y === 10 && x === 9) {
+                xRow.push(4)
               } else {
-                xRow.push(0);
+                xRow.push(1);
               }
             }
           }
