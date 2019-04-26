@@ -121,6 +121,13 @@ export class AnimationHandler{
         this.modelRender.addInstance(this.agent, 'agent');
     }
 
+    private hasStreet(y, x) {
+        console.log(x, y);
+        if(y <= 0 || x <= 0) return false;
+        let [yxpos, yxneg, xypos, xyneg] = [this.map2d[y-1] ? this.map2d[y-1][x] : 1, this.map2d[y+1] ? this.map2d[y+1][x] : 1, this.map2d[y] ? this.map2d[y][x+1] : 1,this.map2d[y+1] ?  this.map2d[y+1][x-1] : 1];
+        return yxpos===0 || yxneg===0 || xypos===0 || xyneg === 0;
+    }
+
     private createInitialScene() {
         // clear instances
         this.modelRender.models["wall"].instances = [];
@@ -131,11 +138,13 @@ export class AnimationHandler{
                 switch(p) {
                     // our problem is, that the coordinate system in the 3d view starts on the bottom left, the array kinda starts in the top left. So we need to invert some values
                     case 1:
-                        const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
-                        this.modelRender.addInstance(wall, 'wall');
-
-                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
-                        this.modelRender.addInstance(top, 'top');
+                        if(this.hasStreet(pi, this.map2d.length - ei - 1)) {
+                            const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
+                            this.modelRender.addInstance(wall, 'wall');
+    
+                            const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
+                            this.modelRender.addInstance(top, 'top');
+                        }
                         break;
                     case 3:
                         const start = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
