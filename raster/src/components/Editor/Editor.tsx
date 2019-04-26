@@ -49,84 +49,76 @@ export class Editor extends Component<IEditorProps> {
   }, {
     label: "Start",
     value: FieldType.START
-  }, ]
+  },]
 
   public render() {
-    if(this.props.pageStore == null) {
-        return <div>Page Store not injected</div>
+    if (this.props.pageStore == null) {
+      return <div>Page Store not injected</div>
     }
     return (
-      <> 
+      <>
         <Overlay className={Classes.OVERLAY_SCROLL_CONTAINER} isOpen={this.showImport} onClose={() => this.showImport = false}>
-          <div style={{background: "ghostwhite", width: "400px", height: "400px"}}>
-            <input value={this.matrixName} onChange={e => this.matrixName = e.target.value}/>
-            <textarea value={this.matrixInput} onChange={e => this.matrixInput = e.target.value}/>
+          <div style={{ background: "ghostwhite", width: "400px", height: "400px" }}>
+            <input value={this.matrixName} onChange={e => this.matrixName = e.target.value} />
+            <textarea value={this.matrixInput} onChange={e => this.matrixInput = e.target.value} />
             <Button text="import" onClick={() => {
               let mapData = JSON.parse(this.matrixInput)
-              if(window.localStorage.getItem("maps")) {
-                window.localStorage.setItem("maps", JSON.stringify([{map: this.matrixInput, name: this.matrixName}, ...JSON.parse(window.localStorage.getItem("maps"))]))
+              if (window.localStorage.getItem("maps")) {
+                window.localStorage.setItem("maps", JSON.stringify([{ map: this.matrixInput, name: this.matrixName }, ...JSON.parse(window.localStorage.getItem("maps"))]))
               } else {
-                window.localStorage.setItem("maps",JSON.stringify([{map: this.matrixInput, name: this.matrixName}]))
+                window.localStorage.setItem("maps", JSON.stringify([{ map: this.matrixInput, name: this.matrixName }]))
               }
               mapData.forEach((y, yi) => {
                 y.forEach((x, xi) => {
                   this.onChangeData(yi, xi, x);
                 })
               })
-            }}/>
+            }} />
           </div>
         </Overlay>
-        Edit Type: {this.editorState} <br/>
-        <div style={{display: "flex", flexDirection: "row"}}>
+        Edit Type: {this.editorState} <br />
+        <div style={{ display: "flex", flexDirection: "row" }}>
           <div className="side">
-              <div className="btn" style={{marginTop: "16px"}} onClick={() => console.log(JSON.stringify(this.props.pageStore.mapData))}>show in console</div>
-              <Button text="load matrix" onClick={() => {
-                  let mapData = JSON.parse(JSON.parse(toJS(this.mapLoader)))
-                  mapData.forEach((y, yi) => {
-                    (y as any).forEach((x, xi) => {
-                      this.onChangeData(yi, xi, x);
-                    })
-                  })
-                }}>
-                  
-                </Button>
+            <div className="btn" style={{ marginTop: "16px" }} onClick={() => console.log(JSON.stringify(this.props.pageStore.mapData))}>show in console</div>
+            <Button text="load matrix" onClick={() => {
+              let mapData = JSON.parse(JSON.parse(toJS(this.mapLoader)))
+              mapData.forEach((y, yi) => {
+                (y as any).forEach((x, xi) => {
+                  this.onChangeData(yi, xi, x);
+                })
+              })
+            }}>
 
-                <Button text="import matrix" onClick={() => {
-                  this.showImport = true;
-              }}>
-                  
-              </Button>
-              {/* Tileselect */}
-              <select style={{width: "100%"}} onChange={e => this.editorState = parseInt(e.target.value)}>
-                {this.options.map(e => <option value={e.value}>{e.label}</option>)}
-              </select>
-              {/* Mapselect */}
-              <select style={{width: "100%"}} onChange={e => this.mapLoader = e.target.value}>
-                {maps.map(e => <option value={JSON.stringify(e.map)}>{e.name}</option>)}
-              </select>
-              {/* Slider */}
-            <div className="slidercontainer">
-              Y:
-              <input className="slider" type="range" min={0} max={20} value={this.props.pageStore.sizeY} onChange={e => this.onChangeYAxis(parseInt(e.target.value))}/><br/>
-            </div>
-              <div className="slidercontainer">
-                X:
-                <input className="slider" type="range" min={0} max={20} value={this.props.pageStore.sizeX} onChange={e => this.onChangeXAxis(parseInt(e.target.value))}/><br/>
-              </div>
-            </div>
+            </Button>
+
+            <Button text="import matrix" onClick={() => {
+              this.showImport = true;
+            }}>
+
+            </Button>
+            {/* Tileselect */}
+            <select style={{ width: "100%" }} onChange={e => this.editorState = parseInt(e.target.value)}>
+              {this.options.map(e => <option value={e.value}>{e.label}</option>)}
+            </select>
+            {/* Mapselect */}
+            <select style={{ width: "100%" }} onChange={e => this.mapLoader = e.target.value}>
+              {maps.map(e => <option value={JSON.stringify(e.map)}>{e.name}</option>)}
+            </select>
+
+          </div>
           <div>
-            <span className="detailBadge">Y: {this.props.pageStore.sizeY} X: {this.props.pageStore.sizeX} <br/></span>
-            <div style={{display: "flex", flexDirection: "row"}}>
-              <Grid type={this.editorState} onChange={this.onChangeData}/>
+            <span className="detailBadge">Y: {this.props.pageStore.sizeY} X: {this.props.pageStore.sizeX} <br /></span>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <Grid type={this.editorState} onChange={this.onChangeData} />
             </div>
           </div>
           <div>
             <Hints
               hints={[
-                {color: "black", content: "Wall"},
-                {color: "green", content: "Goal"},
-                {color: "yellow", content: "Start"},
-                {color: "tomato", content: "Agent"},
+                { color: "black", content: "Wall" },
+                { color: "green", content: "Goal" },
+                { color: "yellow", content: "Start" },
+                { color: "tomato", content: "Agent" },
               ]}
             />
           </div>
@@ -137,8 +129,8 @@ export class Editor extends Component<IEditorProps> {
 
   @autobind
   private onChangeYAxis(value: number) {
-    if(value <= 0) return;
-    if(value < this.props.pageStore.mapData.length) {
+    if (value <= 0) return;
+    if (value < this.props.pageStore.mapData.length) {
       this.props.pageStore.mapData.splice(value, this.props.pageStore.mapData.length - value);
     } else {
       this.props.pageStore.mapData.push(
@@ -150,8 +142,8 @@ export class Editor extends Component<IEditorProps> {
 
   @autobind
   private onChangeXAxis(value: number) {
-    if(value <= 0) return;
-    if(value < this.props.pageStore.mapData[0].length) {
+    if (value <= 0) return;
+    if (value < this.props.pageStore.mapData[0].length) {
       this.props.pageStore.mapData.forEach(e => {
         e.splice(value, e.length - value);
       });
@@ -166,10 +158,10 @@ export class Editor extends Component<IEditorProps> {
   @autobind
   private onChangeData(y: number, x: number, type: FieldType) {
     // there can only be one agent, one start and one goal
-    if([FieldType.AGENT, FieldType.START, FieldType.GOAL].includes(type)) {
+    if ([FieldType.AGENT, FieldType.START, FieldType.GOAL].includes(type)) {
       this.resetField(type);
     }
-    
+
     let { mapData } = this.props.pageStore;
     this.replaceTiles(FieldType.PATH, FieldType.NOTHING, mapData);
     mapData[y][x] = type;
@@ -182,7 +174,7 @@ export class Editor extends Component<IEditorProps> {
   private resetField(type: FieldType) {
     this.props.pageStore.mapData.forEach((e, y) => {
       e.forEach((p, x) => {
-        if(p === type) this.props.pageStore.mapData[y][x] = FieldType.NOTHING;
+        if (p === type) this.props.pageStore.mapData[y][x] = FieldType.NOTHING;
       });
     });
   }
@@ -190,7 +182,7 @@ export class Editor extends Component<IEditorProps> {
   private replaceTiles(oldTile: FieldType, newTile: FieldType, map: FieldType[][]) {
     map.forEach((e, y) => {
       e.forEach((p, x) => {
-        if(p === oldTile) {
+        if (p === oldTile) {
           map[y][x] = newTile;
         }
       })
