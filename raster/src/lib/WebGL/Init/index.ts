@@ -133,6 +133,9 @@ export class AnimationHandler{
                     case 1:
                         const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(wall, 'wall');
+
+                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
+                        this.modelRender.addInstance(top, 'top');
                         break;
                     case 3:
                         const start = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
@@ -219,10 +222,14 @@ export class AnimationHandler{
         path.addMaterial(pathMat);
 
         const wallMat = new Material();
-        wallMat.addDiffuse(require('../resources/black.jpg'));
+        wallMat.addDiffuse(require('../resources/city.png'));
         const wall = new ModelType(vertices, indices, normals, textureCoords);
         wall.addMaterial(wallMat);
         this.modelRender.registerNewModel(wall, 'wall');
+
+
+        const top = new ModelType(vertices, indices, normals, textureCoords);
+        this.modelRender.registerNewModel(top, 'top');
     
         // Empty space
         const gravel = new Material();

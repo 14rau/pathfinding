@@ -17,6 +17,24 @@ export default class Camera {
         this.generateMatrices();
         MouseEvent.subscribeToDrag(this);
         MouseEvent.subscribeToWheel(this);
+        window.addEventListener("keydown", (e) => {
+            console.log(e.key)
+            switch(e.key) {
+                case "w":
+                        this.z += 1;
+                    break;
+                case "a":
+                    this.pitch -= 1;
+                    break;
+                case "s":
+                    this.z -= 1;
+                    break;
+                case "d":
+                    this.pitch += 1;
+                    break;
+            }
+            this.generateMatrices();
+        })
     }
 
     onDrag = (dx, dy) => {

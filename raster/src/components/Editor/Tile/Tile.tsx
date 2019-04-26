@@ -17,7 +17,7 @@ export interface ITileProps {
         width: number;
         height: number;
     }
-    onClick: () => void;
+    onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     position: {
         x: number;
         y: number;
