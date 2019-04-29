@@ -126,6 +126,7 @@ export class AnimationHandler{
         this.modelRender.models["wall"].instances = [];
         this.modelRender.models["none"].instances = [];
         this.modelRender.models["top"].instances = [];
+        this.modelRender.models["lawn"].instances = [];
         this.map2d.forEach((e, ei) => {
             e.forEach((p, pi) => {
                 switch(p) {
@@ -152,18 +153,33 @@ export class AnimationHandler{
                         }
                         break;
                     case 4:
-                        this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
+                        this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 180, 0, 0.5 );
                         this.modelRender.addInstance(this.goalObject, 'goal');
                         break;
                     case 6:
                         const path = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(path, 'path');
                         break;
+                    case 7:
+                        const firstLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(firstLevel, 'wall');
+
+                        const secondLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(secondLevel, 'wall');
+
+                        const roof = new ModelInstance(pi, this.map2d.length - ei - 1, 2.1, 0, 0, 0, 0.49 );
+                        this.modelRender.addInstance(roof, 'top');
+                        break;
+                    case 8:
+                        const lawn = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(lawn, 'lawn');
+                        break;
+                    
     
                 }
 
                 // render the ground for every element in the scene
-                if(p !== 6) {
+                if(![6, 8].includes(p)) {
                     const obj = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
                     this.modelRender.addInstance(obj, 'none');
                 }
@@ -207,7 +223,7 @@ export class AnimationHandler{
 
     private initLights() {
         this.lights = new Map();
-        this.lights.set("default", new Light(100, 100, -100, 1.0, 1.0, 1.0, 0.1));
+        this.lights.set("default", new Light(100, 100, -100, 1.0, 1.0, 1.0, 0.3));
     }
 
     private init3DObjects() {
@@ -236,6 +252,13 @@ export class AnimationHandler{
         const none = new ModelType(vertices, indices, normals, textureCoords);
         none.addMaterial(gravel);
         this.modelRender.registerNewModel(none, 'none');
+        // Empty space
+
+        const grass = new Material();
+        grass.addDiffuse(require('../resources/grass.jpg'));
+        const lawn = new ModelType(vertices, indices, normals, textureCoords);
+        lawn.addMaterial(grass);
+        this.modelRender.registerNewModel(lawn, 'lawn');
     
         // Goal
         const goalMat = new Material();
