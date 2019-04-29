@@ -61,6 +61,10 @@ export class Editor extends Component<IEditorProps> {
     label: "Lawn",
     value: FieldType.LAWN,
     color: "lawngreen"
+  }, {
+    label: "Building Site",
+    value: FieldType.BUILDINGSITE,
+    color: "tomato"
   }]
 
   public render() {

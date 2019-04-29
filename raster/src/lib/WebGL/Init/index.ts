@@ -174,6 +174,10 @@ export class AnimationHandler{
                         const lawn = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(lawn, 'lawn');
                         break;
+                    case 9:
+                        const buildingSite = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 180, 0.5 );
+                        this.modelRender.addInstance(buildingSite, 'buildingSite');
+                        break;
                     
     
                 }
@@ -241,6 +245,12 @@ export class AnimationHandler{
         const wall = new ModelType(vertices, indices, normals, textureCoords);
         wall.addMaterial(wallMat);
         this.modelRender.registerNewModel(wall, 'wall');
+
+        const buildingSiteMat = new Material();
+        buildingSiteMat.addDiffuse(require('../resources/buildingSite.jpg'));
+        const buildingSite = new ModelType(vertices, indices, normals, textureCoords);
+        buildingSite.addMaterial(buildingSiteMat);
+        this.modelRender.registerNewModel(buildingSite, 'buildingSite');
 
 
         const top = new ModelType(vertices, indices, normals, textureCoords);
