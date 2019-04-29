@@ -105,14 +105,17 @@ namespace Server
                     if (inputMap[x][y] == settings[0])
                         result[x][y] = 0;
 
-                    if (inputMap[x][y] == settings[1])
+                    else if (inputMap[x][y] == settings[1])
                         result[x][y] = 1;
 
-                    if (inputMap[x][y] == settings[2])
+                    else if (inputMap[x][y] == settings[2])
                         result[x][y] = 3;
 
-                    if (inputMap[x][y] == settings[3])
+                    else if (inputMap[x][y] == settings[3])
                         result[x][y] = 4;
+                    else
+                        result[x][y] = 1;
+
                 }
             }
             return result;
