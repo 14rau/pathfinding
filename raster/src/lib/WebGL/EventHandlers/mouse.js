@@ -3,13 +3,15 @@ import GLC from '../GLCommander';
 class MouseListener {
     constructor(){
         this.onWheelListeners = [];
-        this.onDragListeners = []
+        this.onDragListeners = [];
+        this.onWheelDrag = [];
     }
 
     init = () => {
         let x = 0;
         let y = 0;
         let dragging = false;
+        let wheel = false;
 
         GLC.gl.canvas.onwheel = (e) => {
             this.onWheelListeners.forEach(listener => {
@@ -21,10 +23,12 @@ class MouseListener {
             x = e.clientX;
             y = e.clientY;
             dragging = true;
+            if(e.button === 1) wheel = true;
         }
 
         GLC.gl.canvas.onmouseup = () => {
             dragging = false;
+            wheel = false;
         }
 
         GLC.gl.canvas.onmousemove = (e) => {
@@ -33,9 +37,16 @@ class MouseListener {
                 const dy = y - e.clientY;
                 x = e.clientX;
                 y = e.clientY;
-                this.onDragListeners.forEach(listener => {
-                    listener.onDrag(dx, dy);
-                });
+                if(!wheel) {
+                    this.onDragListeners.forEach(listener => {
+                        listener.onDrag(dx, dy);
+                    });
+                } else {
+                    this.onDragListeners.forEach(listener => {
+                        listener.onWheelDrag(dx, dy);
+                    });
+                }
+
             }
         }
     }
@@ -46,6 +57,10 @@ class MouseListener {
 
     subscribeToWheel = (listener) => {
         this.onWheelListeners.push(listener)
+    }
+
+    subscribeToWheelDrag = (listener) => {
+        this.onWheelDrag.push(listener)
     }
 }
 

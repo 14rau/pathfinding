@@ -52,7 +52,6 @@ export class AnimationHandler{
     }
     
     public toggleMovement() {
-        console.log(this.isMoving, "isMoving call")
         this.isMoving = !this.isMoving;
     }
 
@@ -126,6 +125,8 @@ export class AnimationHandler{
         // clear instances
         this.modelRender.models["wall"].instances = [];
         this.modelRender.models["none"].instances = [];
+        this.modelRender.models["top"].instances = [];
+        this.modelRender.models["lawn"].instances = [];
         this.map2d.forEach((e, ei) => {
             e.forEach((p, pi) => {
                 switch(p) {
@@ -136,6 +137,7 @@ export class AnimationHandler{
 
                         const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
                         this.modelRender.addInstance(top, 'top');
+                        
                         break;
                     case 3:
                         const start = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
@@ -151,20 +153,37 @@ export class AnimationHandler{
                         }
                         break;
                     case 4:
-                        if(!this.goalObject) {
-                            this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
-                            this.modelRender.addInstance(this.goalObject, 'goal');
-                        }
+                        this.goalObject = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 180, 0, 0.5 );
+                        this.modelRender.addInstance(this.goalObject, 'goal');
                         break;
                     case 6:
                         const path = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(path, 'path');
                         break;
+                    case 7:
+                        const firstLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(firstLevel, 'wall');
+
+                        const secondLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(secondLevel, 'wall');
+
+                        const roof = new ModelInstance(pi, this.map2d.length - ei - 1, 2.1, 0, 0, 0, 0.49 );
+                        this.modelRender.addInstance(roof, 'top');
+                        break;
+                    case 8:
+                        const lawn = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(lawn, 'lawn');
+                        break;
+                    case 9:
+                        const buildingSite = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 180, 0.5 );
+                        this.modelRender.addInstance(buildingSite, 'buildingSite');
+                        break;
+                    
     
                 }
 
                 // render the ground for every element in the scene
-                if(p !== 6) {
+                if(![6, 8].includes(p)) {
                     const obj = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
                     this.modelRender.addInstance(obj, 'none');
                 }
@@ -208,7 +227,7 @@ export class AnimationHandler{
 
     private initLights() {
         this.lights = new Map();
-        this.lights.set("default", new Light(100, 100, -100, 1.0, 1.0, 1.0, 0.1));
+        this.lights.set("default", new Light(100, 100, -100, 1.0, 1.0, 1.0, 0.3));
     }
 
     private init3DObjects() {
@@ -227,6 +246,12 @@ export class AnimationHandler{
         wall.addMaterial(wallMat);
         this.modelRender.registerNewModel(wall, 'wall');
 
+        const buildingSiteMat = new Material();
+        buildingSiteMat.addDiffuse(require('../resources/buildingSite.jpg'));
+        const buildingSite = new ModelType(vertices, indices, normals, textureCoords);
+        buildingSite.addMaterial(buildingSiteMat);
+        this.modelRender.registerNewModel(buildingSite, 'buildingSite');
+
 
         const top = new ModelType(vertices, indices, normals, textureCoords);
         this.modelRender.registerNewModel(top, 'top');
@@ -237,10 +262,17 @@ export class AnimationHandler{
         const none = new ModelType(vertices, indices, normals, textureCoords);
         none.addMaterial(gravel);
         this.modelRender.registerNewModel(none, 'none');
+        // Empty space
+
+        const grass = new Material();
+        grass.addDiffuse(require('../resources/grass.jpg'));
+        const lawn = new ModelType(vertices, indices, normals, textureCoords);
+        lawn.addMaterial(grass);
+        this.modelRender.registerNewModel(lawn, 'lawn');
     
         // Goal
         const goalMat = new Material();
-        goalMat.addDiffuse(require('../resources/goal.jpg'));
+        goalMat.addDiffuse(require('../resources/cityhead.png'));
         const goal = new ModelType(vertices, indices, normals, textureCoords);
         goal.addMaterial(goalMat);
         this.modelRender.registerNewModel(goal, 'goal');
@@ -266,12 +298,14 @@ export class AnimationHandler{
             GLC.clear(1.0, 1.0, 1.0, 1.0); // clear the canvas
             // moving animation should only be played when the agent is moving
             if(this.agent && this.movement.length && Array.isArray(this.movement) && this.isMoving) { // in case we have an agent, and a movement with length and we want to ensure we have an array
-                if(!this.canMove(this.agent.y, this.agent.x, this.movement[0][0], this.movement[0][1])) {
+                if(!this.canMove(this.agent.y, this.agent.x, this.movement[0][0]
+                    , this.movement[0][1])) {
                     this.movement.shift();
                     this.action();
                 } else {
                     // first axis is axis, second is amount
-                    this.agent.move(this.movement[0][0], this.movement[0][1]); // move the element on the specified axis ([0][0]) by the calculated amount
+                    this.agent.move(this.movement[0][0]
+                        , this.movement[0][1]); // move the element on the specified axis ([0][0]) by the calculated amount
                     this.movement.shift();
                     if(![3, 4].includes(this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x])) {
                         this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x] = 6;

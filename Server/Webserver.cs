@@ -9,9 +9,9 @@ namespace Server
     class Webserver
     {
         private readonly HttpListener _listener = new HttpListener();
-        private readonly Func<HttpListenerRequest, string[]> _responderMethod;
+        private readonly Func<HttpListenerRequest, JObject> _responderMethod;
 
-        public Webserver(string[] prefixes, Func<HttpListenerRequest, string[]> method)
+        public Webserver(string[] prefixes, Func<HttpListenerRequest, JObject> method)
         {
             if (!HttpListener.IsSupported)
                 throw new NotSupportedException(
@@ -30,7 +30,7 @@ namespace Server
             _listener.Start();
         }
 
-        public Webserver(Func<HttpListenerRequest, string[]> method, params string[] prefixes)
+        public Webserver(Func<HttpListenerRequest, JObject> method, params string[] prefixes)
             : this(prefixes, method) { }
 
         public void Run()
@@ -47,9 +47,7 @@ namespace Server
                         var context = c as HttpListenerContext;
                         try
                         {
-                                string[] responseArray = _responderMethod(context.Request);
-                                JObject responseObject = new JObject();
-                                responseObject.Add("data", JArray.FromObject(responseArray));
+                                JObject responseObject = _responderMethod(context.Request);
                                 byte[] buffer = Encoding.UTF8.GetBytes(responseObject.ToString());
                                 context.Response.ContentLength64 = buffer.Length;
                                 context.Response.OutputStream.Write(buffer, 0, buffer.Length);

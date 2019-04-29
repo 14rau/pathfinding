@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Net;
@@ -9,15 +10,18 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Webserver webServer = new Webserver(SendResponse, "http://localhost:8080/pathfinding/");
+            Webserver webServer = new Webserver(SendResponse, "http://localhost:8080/pathfinding/", "http://localhost:8080/pathfinding/map/");
             webServer.Run();
             Console.WriteLine("Press a key to quit.");
             Console.ReadKey();
             webServer.Stop();
         }
 
-        public static string[] SendResponse(HttpListenerRequest request)
+        public static JObject SendResponse(HttpListenerRequest request)
         {
+
+            if (request.Url.Equals("http://localhost:8080/pathfinding/map/"))
+                return createDefaultMapsObject();
             int[][] mapArray;
 
             string text;
@@ -28,6 +32,7 @@ namespace Server
 
             var jsonObj = JObject.Parse(text);
             JArray arr = (JArray)jsonObj["map"];
+
             int algorithm = (jsonObj["algorithm"] != null)?(int)jsonObj["algorithm"] :0;
 
             if (jsonObj["settings"] != null) { 
@@ -37,25 +42,56 @@ namespace Server
             else
                 mapArray = arr.ToObject<int[][]>();
 
+            JObject responseObject = new JObject();
+
             switch (algorithm)
             {
                 case 0:
-                    return PathfindingApi.calculatePathRandom(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
+                    return responseObject;
                 case 1:
-                    return PathfindingApi.calculatePathArtem1(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateAStar(mapArray)));
+                    return responseObject;
                 case 2:
-                    return PathfindingApi.calculatePathArtem2(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateDijkstra(mapArray)));
+                    return responseObject;
                 case 3:
-                    return PathfindingApi.calculateArtem3(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateGeneric(mapArray)));
+                    return responseObject;
                 case 4:
-                    return PathfindingApi.calculatePathOwn(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathOwn(mapArray)));
+                    return responseObject;
                 case 5:
-                    return PathfindingApi.calculatePathDumb(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathDumb(mapArray)));
+                    return responseObject;
                 default:
-                    return PathfindingApi.calculatePathOwn(mapArray);
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
+                    return responseObject;
 
             }
 
+        }
+
+        private static JObject createDefaultMapsObject()
+        {
+            JObject responseObject = new JObject();
+            JArray maps = new JArray();
+
+            string[] filePaths = Directory.GetFiles(@"D:\\Git\\pathfinder\\Server\\Maps");
+
+            foreach(String filePath in filePaths)
+            {
+                using (StreamReader file = File.OpenText(filePath))
+                using (JsonTextReader reader = new JsonTextReader(file))
+                {
+                    JObject o2 = (JObject)JToken.ReadFrom(reader);
+                    maps.Add(o2);
+                }
+            }
+
+            responseObject.Add("maps", maps);
+            
+            return responseObject;
         }
 
         private static int[][] applyCustomOptions(int[][] inputMap, int[] settings)
@@ -69,14 +105,17 @@ namespace Server
                     if (inputMap[x][y] == settings[0])
                         result[x][y] = 0;
 
-                    if (inputMap[x][y] == settings[1])
+                    else if (inputMap[x][y] == settings[1])
                         result[x][y] = 1;
 
-                    if (inputMap[x][y] == settings[2])
+                    else if (inputMap[x][y] == settings[2])
                         result[x][y] = 3;
 
-                    if (inputMap[x][y] == settings[3])
+                    else if (inputMap[x][y] == settings[3])
                         result[x][y] = 4;
+                    else
+                        result[x][y] = 1;
+
                 }
             }
             return result;
