@@ -9,7 +9,8 @@ export enum FieldType {
     BLOCKED,
     PATH,
     SKYSCRAPER,
-    LAWN
+    LAWN,
+    BUILDINGSITE
 
 }
 
@@ -62,6 +63,7 @@ export class Tile extends React.Component<ITileProps>{
             case FieldType.GOAL: return "green";
             case FieldType.SKYSCRAPER: return "lightgrey";
             case FieldType.LAWN: return "lawngreen";
+            case FieldType.BUILDINGSITE: return "tomato";
         }
     }
 }
