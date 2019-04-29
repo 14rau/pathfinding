@@ -121,13 +121,6 @@ export class AnimationHandler{
         this.modelRender.addInstance(this.agent, 'agent');
     }
 
-    private hasStreet(y, x) {
-        console.log(x, y);
-        if(y <= 0 || x <= 0) return false;
-        let [yxpos, yxneg, xypos, xyneg] = [this.map2d[y-1] ? this.map2d[y-1][x] : 1, this.map2d[y+1] ? this.map2d[y+1][x] : 1, this.map2d[y] ? this.map2d[y][x+1] : 1,this.map2d[y+1] ?  this.map2d[y+1][x-1] : 1];
-        return yxpos===0 || yxneg===0 || xypos===0 || xyneg === 0;
-    }
-
     private createInitialScene() {
         // clear instances
         this.modelRender.models["wall"].instances = [];
@@ -138,13 +131,12 @@ export class AnimationHandler{
                 switch(p) {
                     // our problem is, that the coordinate system in the 3d view starts on the bottom left, the array kinda starts in the top left. So we need to invert some values
                     case 1:
-                        if(this.hasStreet(pi, this.map2d.length - ei - 1)) {
-                            const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
-                            this.modelRender.addInstance(wall, 'wall');
-    
-                            const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
-                            this.modelRender.addInstance(top, 'top');
-                        }
+                        const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(wall, 'wall');
+
+                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
+                        this.modelRender.addInstance(top, 'top');
+                        
                         break;
                     case 3:
                         const start = new ModelInstance(pi, this.map2d.length - ei - 1, 0.35, 0, 0, 0, 0.2 );
@@ -273,12 +265,14 @@ export class AnimationHandler{
             GLC.clear(1.0, 1.0, 1.0, 1.0); // clear the canvas
             // moving animation should only be played when the agent is moving
             if(this.agent && this.movement.length && Array.isArray(this.movement) && this.isMoving) { // in case we have an agent, and a movement with length and we want to ensure we have an array
-                if(!this.canMove(this.agent.y, this.agent.x, this.movement[0][0], this.movement[0][1])) {
+                if(!this.canMove(this.agent.y, this.agent.x, this.movement[0][0]
+                    , this.movement[0][1])) {
                     this.movement.shift();
                     this.action();
                 } else {
                     // first axis is axis, second is amount
-                    this.agent.move(this.movement[0][0], this.movement[0][1]); // move the element on the specified axis ([0][0]) by the calculated amount
+                    this.agent.move(this.movement[0][0]
+                        , this.movement[0][1]); // move the element on the specified axis ([0][0]) by the calculated amount
                     this.movement.shift();
                     if(![3, 4].includes(this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x])) {
                         this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x] = 6;
