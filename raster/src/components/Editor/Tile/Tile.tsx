@@ -2,12 +2,14 @@ import * as React from "react";
 
 export enum FieldType {
     NOTHING = 0,
-    WALL,
+    HOUSE,
     AGENT,
     START,
     GOAL,
     BLOCKED,
-    PATH
+    PATH,
+    SKYSCRAPER,
+    LAWN
 
 }
 
@@ -54,10 +56,12 @@ export class Tile extends React.Component<ITileProps>{
         switch(this.props.type) {
             case FieldType.NOTHING: return "grey";
             case FieldType.BLOCKED:
-            case FieldType.WALL: return "black";
+            case FieldType.HOUSE: return "black";
             case FieldType.START: return "yellow";
             case FieldType.AGENT: return "tomato";
-            case FieldType.GOAL: return "green"
+            case FieldType.GOAL: return "green";
+            case FieldType.SKYSCRAPER: return "lightgrey";
+            case FieldType.LAWN: return "lawngreen";
         }
     }
 }
