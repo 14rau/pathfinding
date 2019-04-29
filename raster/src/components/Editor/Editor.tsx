@@ -33,13 +33,13 @@ export class Editor extends Component<IEditorProps> {
   };
 
   // track the editor state -> in which mode are we? Set Goal, Walls, Start?
-  @observable private editorState = FieldType.WALL;
+  @observable private editorState = FieldType.NOTHING;
   @observable private matrixInput = "";
   @observable private matrixName = "";
 
   private options = [{
-    label: "Wall",
-    value: FieldType.WALL,
+    label: "House",
+    value: FieldType.HOUSE,
     color: "black"
   }, {
     label: "None",
@@ -53,7 +53,15 @@ export class Editor extends Component<IEditorProps> {
     label: "Start",
     value: FieldType.START,
     color: "yellow"
-  },]
+  }, {
+    label: "Skyscraper",
+    value: FieldType.SKYSCRAPER,
+    color: "lightgrey"
+  }, {
+    label: "Lawn",
+    value: FieldType.LAWN,
+    color: "lawngreen"
+  }]
 
   public render() {
     if (this.props.pageStore == null) {
@@ -123,12 +131,12 @@ export class Editor extends Component<IEditorProps> {
           </div>
           <div>
             <Hints
-              hints={[
-                { color: "black", content: "Wall" },
-                { color: "green", content: "Goal" },
-                { color: "yellow", content: "Start" },
-                { color: "tomato", content: "Agent" },
-              ]}
+              hints={
+                this.options.map(e => ({
+                  content: e.label,
+                  color: e.color
+                }))
+              }
             />
           </div>
         </div>
