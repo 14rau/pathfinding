@@ -1,4 +1,9 @@
-﻿namespace Server
+﻿using PathLib;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Server
 {
     class PathfindingApi
     {
@@ -29,24 +34,39 @@
         }
 
         //A*
-        public static string[] calculatePathArtem1(int[][] map)
+        public static string[] calculateAStar(int[][] map)
         {
-            APathfindingEngine engine = new RandomEngine(map);
-            return engine.calculatePath();
+            Field mapField = new Field(map);
+            var positions = mapField.aStarBest(400);
+            if (positions == null) throw new Exception("No path");
+            return positions.Select(i => 
+            {
+                return i.direction.ToString().ToLower();
+            }).ToArray();
         }
 
-        //Das Ding mit D
-        public static string[] calculatePathArtem2(int[][] map)
+        //Dijkstras path finding algo
+        public static string[] calculateDijkstra(int[][] map)
         {
-            APathfindingEngine engine = new RandomEngine(map);
-            return engine.calculatePath();
+            Field mapField = new Field(map);
+            var positions = mapField.dijkstrasBest();
+            if (positions == null) throw new Exception("No path");
+            return positions.Select(i =>
+            {
+                return i.direction.ToString().ToLower();
+            }).ToArray();
         }
 
         //Genetic
-        public static string[] calculateArtem3(int[][] map)
+        public static string[] calculateGeneric(int[][] map)
         {
-            APathfindingEngine engine = new RandomEngine(map);
-            return engine.calculatePath();
+            Field mapField = new Field(map);
+            var positions = mapField.geneticFindBest(4, 300);
+            if (positions == null) throw new Exception("No path");
+            return positions.Select(i =>
+            {
+                return i.direction.ToString().ToLower();
+            }).ToArray();
         }
     }
 }

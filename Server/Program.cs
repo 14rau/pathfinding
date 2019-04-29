@@ -50,13 +50,13 @@ namespace Server
                     responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
                     return responseObject;
                 case 1:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathArtem1(mapArray)));
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateAStar(mapArray)));
                     return responseObject;
                 case 2:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathArtem2(mapArray)));
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateDijkstra(mapArray)));
                     return responseObject;
                 case 3:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateArtem3(mapArray)));
+                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateGeneric(mapArray)));
                     return responseObject;
                 case 4:
                     responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathOwn(mapArray)));
