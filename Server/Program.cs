@@ -37,7 +37,7 @@ namespace Server
             {
                 string name = (string)jsonObj["name"];
 
-                using (StreamWriter file = File.CreateText(@"D:\\Git\\pathfinder\\Server\\Maps\\"+ name + ".json"))
+                using (StreamWriter file = File.CreateText(Path.Combine(getDir(),name+".json")))
                 using (JsonTextWriter writer = new JsonTextWriter(file))
                 {
                     jsonObj.WriteTo(writer);
@@ -91,7 +91,7 @@ namespace Server
             JObject responseObject = new JObject();
             JArray maps = new JArray();
 
-            string[] filePaths = Directory.GetFiles(@"D:\\Git\\pathfinder\\Server\\Maps");
+            string[] filePaths = Directory.GetFiles(getDir());
 
             foreach(String filePath in filePaths)
             {
@@ -133,6 +133,13 @@ namespace Server
                 }
             }
             return result;
+        }
+
+        private static string getDir()
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Maps");
+            Directory.CreateDirectory(path);
+            return path;
         }
 
     }
