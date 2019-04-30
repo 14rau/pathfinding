@@ -10,7 +10,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Webserver webServer = new Webserver(SendResponse, "http://localhost:8080/pathfinding/", "http://localhost:8080/pathfinding/map/");
+            Webserver webServer = new Webserver(SendResponse, "http://localhost:8080/pathfinding/", "http://localhost:8080/pathfinding/map/", "http://localhost:8080/pathfinding/save/");
             webServer.Run();
             Console.WriteLine("Press a key to quit.");
             Console.ReadKey();
@@ -22,6 +22,7 @@ namespace Server
 
             if (request.Url.Equals("http://localhost:8080/pathfinding/map/"))
                 return createDefaultMapsObject();
+
             int[][] mapArray;
 
             string text;
@@ -30,7 +31,20 @@ namespace Server
                 text = reader.ReadToEnd();
             }
 
-            var jsonObj = JObject.Parse(text);
+            JObject jsonObj = JObject.Parse(text);
+
+            if (request.Url.Equals("http://localhost:8080/pathfinding/save/"))
+            {
+                string name = (string)jsonObj["name"];
+
+                using (StreamWriter file = File.CreateText(@"D:\\Git\\pathfinder\\Server\\Maps\\"+ name + ".json"))
+                using (JsonTextWriter writer = new JsonTextWriter(file))
+                {
+                    jsonObj.WriteTo(writer);
+                }
+                return new JObject();
+            }
+
             JArray arr = (JArray)jsonObj["map"];
 
             int algorithm = (jsonObj["algorithm"] != null)?(int)jsonObj["algorithm"] :0;
