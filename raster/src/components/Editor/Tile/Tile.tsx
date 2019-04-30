@@ -1,4 +1,6 @@
 import * as React from "react";
+import { inject } from "mobx-react";
+import { PageStore } from "../../../lib/PageStore";
 
 export enum FieldType {
     NOTHING = 0,
@@ -25,8 +27,11 @@ export interface ITileProps {
         x: number;
         y: number;
     }
+    // injected
+    pageStore?: PageStore;
 }
 
+@inject("pageStore")
 export class Tile extends React.Component<ITileProps>{
 
     public static defaultProps = {
@@ -48,7 +53,17 @@ export class Tile extends React.Component<ITileProps>{
                     width: `${this.props.size.width}px`,
                     height: `${this.props.size.height}px`}}
                     
-                onClick={this.props.onClick}
+                onClick={(e) => {
+                    this.props.onClick(e);
+                    this.props.pageStore.mouseDown = !this.props.pageStore.mouseDown;
+                }}
+
+                onMouseLeave={(e) => {
+                    if(this.props.pageStore.mouseDown) {
+                        this.props.onClick(e);
+                    }
+                }}
+
                 // we want the outer to be disabled, so you can't remove it
                 disabled={this.props.type === FieldType.BLOCKED}
             />

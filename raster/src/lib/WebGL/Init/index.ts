@@ -121,6 +121,17 @@ export class AnimationHandler{
         this.modelRender.addInstance(this.agent, 'agent');
     }
 
+    public renderPath() {
+        this.map2d.forEach((e, ei) => {
+            e.forEach((p, pi) => {
+                if(p === 6) {
+                    const path = new ModelInstance(pi, this.map2d.length - ei - 1, 0, 0, 0, 0, 0.5 );
+                    this.modelRender.addInstance(path, 'path');
+                }
+            })
+        })
+    }
+
     private createInitialScene() {
         // clear instances
         this.modelRender.models["wall"].instances = [];
@@ -128,14 +139,19 @@ export class AnimationHandler{
         this.modelRender.models["top"].instances = [];
         this.modelRender.models["lawn"].instances = [];
         this.map2d.forEach((e, ei) => {
+    
             e.forEach((p, pi) => {
                 switch(p) {
                     // our problem is, that the coordinate system in the 3d view starts on the bottom left, the array kinda starts in the top left. So we need to invert some values
                     case 1:
-                        const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
+                        let wallRng = Math.random()
+                        const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1+wallRng, 0, 0, 0, 0.45 );
                         this.modelRender.addInstance(wall, 'wall');
 
-                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1, 0, 0, 0, 0.49 );
+                        const wall2 = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(wall2, 'wall');
+
+                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1+wallRng, 0, 0, 0, 0.49 );
                         this.modelRender.addInstance(top, 'top');
                         
                         break;
@@ -161,13 +177,17 @@ export class AnimationHandler{
                         this.modelRender.addInstance(path, 'path');
                         break;
                     case 7:
+                        let rng = Math.random();
                         const firstLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(firstLevel, 'wall');
 
-                        const secondLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
+                        const midLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
+                        this.modelRender.addInstance(midLevel, 'wall');
+
+                        const secondLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2 + rng, 0, 0, 0, 0.45 );
                         this.modelRender.addInstance(secondLevel, 'wall');
 
-                        const roof = new ModelInstance(pi, this.map2d.length - ei - 1, 2.1, 0, 0, 0, 0.49 );
+                        const roof = new ModelInstance(pi, this.map2d.length - ei - 1, 2.1+rng, 0, 0, 0, 0.49 );
                         this.modelRender.addInstance(roof, 'top');
                         break;
                     case 8:
@@ -309,7 +329,7 @@ export class AnimationHandler{
                     this.movement.shift();
                     if(![3, 4].includes(this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x])) {
                         this.map2d[this.map2d.length - this.agent.y - 1][this.agent.x] = 6;
-                        this.createInitialScene();
+                        this.renderPath();
                         this.action();
                     }
                 }
