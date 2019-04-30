@@ -31,8 +31,8 @@ export class Tile extends React.Component<ITileProps>{
 
     public static defaultProps = {
         size: {
-            width: 40,
-            height: 40
+            width: 15,
+            height: 15
         }
     }
 
@@ -42,10 +42,12 @@ export class Tile extends React.Component<ITileProps>{
         return(
             <button
                 style={{
+                    border: "1px solid white",
                     backgroundColor: this.color,
                     display: "inline",
                     width: `${this.props.size.width}px`,
                     height: `${this.props.size.height}px`}}
+                    
                 onClick={this.props.onClick}
                 // we want the outer to be disabled, so you can't remove it
                 disabled={this.props.type === FieldType.BLOCKED}
