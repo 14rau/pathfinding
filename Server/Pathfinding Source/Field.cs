@@ -158,8 +158,11 @@ namespace PathLib
                 //Set movement direction
                 currentSquare.setMovementDirection();
                 //Add square to the path
-                if (!(!includeStartSquare && currentSquare.EqualTo(this.startSquare)))
+				if(!currentSquare.EqualTo(this.startSquare))
                     pathSquares.Add(currentSquare);
+                else
+                    if(includeStartSquare)
+                        pathSquares.Add(currentSquare);
                 //Set the next square
                 currentSquare = currentSquare.parent;
             }
