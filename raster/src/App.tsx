@@ -11,7 +11,7 @@ import { Loading } from "./components/Loading/Loading";
 import autobind from "autobind-decorator";
 
 interface IAppProps {
-  pageStore?: PageStore;
+  pageStore?: PageStore; 
 }
 
 
