@@ -37,7 +37,7 @@ namespace Server
         public static string[] calculateAStar(int[][] map)
         {
             Field mapField = new Field(map);
-            var positions = mapField.aStarBest(400);
+            var positions = mapField.aStarBest(1000);
             if (positions == null) throw new Exception("No path");
             return positions.Select(i => 
             {
@@ -61,7 +61,7 @@ namespace Server
         public static string[] calculateGeneric(int[][] map)
         {
             Field mapField = new Field(map);
-            var positions = mapField.geneticFindBest(4, 300);
+            var positions = mapField.geneticFindBest(4, 300, 50);
             if (positions == null) throw new Exception("No path");
             return positions.Select(i =>
             {
