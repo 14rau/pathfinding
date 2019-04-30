@@ -9,6 +9,7 @@ export class PageStore {
     @observable public movement = ["right", "right", "right", "right", "right", "right", ];
     @observable public currentView = "mb";
     @observable public algorithm = 3;
+    @observable public mouseDown = false;
     private registredViews: WebGL[] = [];
 
     public get defaultTiles() {
