@@ -8,19 +8,54 @@ namespace Server
 {
     class Program
     {
+        static string ip;
+        static string port;
+        static string address;
+
         static void Main(string[] args)
         {
-            Webserver webServer = new Webserver(SendResponse, "http://localhost:8080/pathfinding/", "http://localhost:8080/pathfinding/map/", "http://localhost:8080/pathfinding/save/");
+            initSettings();
+
+            address = "http://"+ip+":"+port+"/";
+
+            Webserver webServer = new Webserver(SendResponse, address+"pathfinding/", address + "pathfinding/map/", address + "pathfinding/save/");
             webServer.Run();
             Console.WriteLine("Press a key to quit.");
             Console.ReadKey();
             webServer.Stop();
         }
 
+        private static void initSettings()
+        {
+            string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "settings.json");
+            if (!File.Exists(settingsPath))
+            {
+                JObject jObject = new JObject();
+
+                jObject.Add("ip", "localhost");
+                jObject.Add("port", "8080");
+
+                using (StreamWriter file = File.CreateText(settingsPath))
+                using (JsonTextWriter writer = new JsonTextWriter(file))
+                {
+                    jObject.WriteTo(writer);
+                }
+            }
+
+            using (StreamReader file = File.OpenText(settingsPath))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JObject settingsJson = (JObject)JToken.ReadFrom(reader);
+                ip = (string)settingsJson["ip"];
+                port = (string)settingsJson["port"];
+
+            }
+        }
+
         public static JObject SendResponse(HttpListenerRequest request)
         {
 
-            if (request.Url.Equals("http://localhost:8080/pathfinding/map/"))
+            if (request.Url.Equals(address+"pathfinding/map/"))
                 return createDefaultMapsObject();
 
             int[][] mapArray;
@@ -32,8 +67,8 @@ namespace Server
             }
 
             JObject jsonObj = JObject.Parse(text);
-
-            if (request.Url.Equals("http://localhost:8080/pathfinding/save/"))
+           
+            if (request.Url.Equals(address + "pathfinding/save/"))
             {
                 string name = (string)jsonObj["name"];
 
