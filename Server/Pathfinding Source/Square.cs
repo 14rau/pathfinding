@@ -81,10 +81,16 @@ namespace PathLib
         /// </summary>
         /// <param name="parent">Previous square</param>
         /// <param name="gCost">Total distance cost of moving to this square</param>
-        public void update(Square parent, double gCost)
+        public bool update(Square parent, double gCost)
         {
-            this.parent = parent;
-            this.gCost = gCost;
+            if (this.gCost == 0 || gCost < this.gCost)
+            {
+                this.parent = parent;
+                this.gCost = gCost;
+                return true;
+            }
+
+            return false;
         }
 
         public void setMovementDirection()
