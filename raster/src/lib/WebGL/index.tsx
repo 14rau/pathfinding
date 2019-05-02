@@ -35,14 +35,6 @@ export class WebGL extends React.Component<IWebGLProps>{
         this.forceUpdate();
     }
 
-
-
-    componentWillUpdate() {
-        console.log("will update");
-        console.log(JSON.stringify(this.props.pageStore.mapData))
-        // this.animationHandler.updateMap(this.props.pageStore.mapData);
-    }
-
     componentWillUnmount() {
         this.animationHandler.unsubscribe(this);
     }

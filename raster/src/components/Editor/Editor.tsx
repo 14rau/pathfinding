@@ -9,6 +9,7 @@ import { Hints } from "./Hints/Hints";
 import { PageStore } from "../../lib/PageStore";
 import { Button, Overlay, Classes } from "@blueprintjs/core";
 import { maps } from "./mapCollection";
+import { Grid2 } from "./Grid2/Grid2";
 
 
 
@@ -37,7 +38,7 @@ export class Editor extends Component<IEditorProps> {
   @observable private matrixInput = "";
   @observable private matrixName = "";
 
-  private options = [{
+  public static options = [{
     label: "House",
     value: FieldType.HOUSE,
     color: "black"
@@ -101,7 +102,7 @@ export class Editor extends Component<IEditorProps> {
             {/* Tileselect */}
             <h4>Tiles</h4>
             <div style={{display: "flex", flexDirection: "column"}}>
-              {this.options.map(e => <Button style={{border: `2px solid ${e.color}`}} active={this.editorState === e.value} text={e.label} onClick={() => this.editorState = e.value}/>)}
+              {Editor.options.map(e => <Button style={{border: `2px solid ${e.color}`}} active={this.editorState === e.value} text={e.label} onClick={() => this.editorState = e.value}/>)}
             </div>
             
             {/* Mapselect */}
@@ -114,6 +115,7 @@ export class Editor extends Component<IEditorProps> {
                     this.onChangeData(yi, xi, x);
                   })
                 })
+                this.props.pageStore.updateMap(mapData);
               }}>
 
               </Button>
@@ -130,13 +132,13 @@ export class Editor extends Component<IEditorProps> {
           <div>
             <span className="detailBadge">Y: {this.props.pageStore.sizeY} X: {this.props.pageStore.sizeX} <br /></span>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <Grid type={this.editorState} onChange={this.onChangeData} />
+              <Grid2 type={this.editorState} onChange={this.onChangeData} />
             </div>
           </div>
           <div>
             <Hints
               hints={
-                this.options.map(e => ({
+                Editor.options.map(e => ({
                   content: e.label,
                   color: e.color
                 }))
@@ -149,44 +151,13 @@ export class Editor extends Component<IEditorProps> {
   }
 
   @autobind
-  private onChangeYAxis(value: number) {
-    if (value <= 0) return;
-    if (value < this.props.pageStore.mapData.length) {
-      this.props.pageStore.mapData.splice(value, this.props.pageStore.mapData.length - value);
-    } else {
-      this.props.pageStore.mapData.push(
-        Utils.getArrayWithLength(this.props.pageStore.mapData[0].length) // we can use 0 here, because we will always have at least 1 element
-      )
-    }
-    this.props.pageStore.sizeY = value;
-  }
-
-  @autobind
-  private onChangeXAxis(value: number) {
-    if (value <= 0) return;
-    if (value < this.props.pageStore.mapData[0].length) {
-      this.props.pageStore.mapData.forEach(e => {
-        e.splice(value, e.length - value);
-      });
-    } else {
-      this.props.pageStore.mapData.forEach(e => {
-        e.push(0);
-      });
-    }
-    this.props.pageStore.sizeX = value;
-  }
-
-  @autobind
   private onChangeData(y: number, x: number, type: FieldType) {
     // there can only be one agent, one start and one goal
     if ([FieldType.START].includes(type)) {
       this.resetField(type);
     }
-
-    let { mapData } = this.props.pageStore;
-    this.replaceTiles(FieldType.PATH, FieldType.NOTHING, mapData);
-    mapData[y][x] = type;
-    this.props.pageStore.updateMap(mapData);
+    this.replaceTiles(FieldType.PATH, FieldType.NOTHING, this.props.pageStore.mapData);
+    this.props.pageStore.mapData[y][x] = type;
   }
 
   // Helper functions -> May add an Utils script?

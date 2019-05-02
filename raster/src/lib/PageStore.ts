@@ -3,14 +3,14 @@ import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
 
 export class PageStore {
-    @observable public sizeX = 50;
-    @observable public sizeY = 50;
+    @observable public sizeX = 60;
+    @observable public sizeY = 60;
     @observable public mapData = this.defaultTiles;
     @observable public movement = ["right", "right", "right", "right", "right", "right", ];
     @observable public currentView = "mb";
     @observable public algorithm = 3;
     @observable public mouseDown = false;
-    private registredViews: WebGL[] = [];
+    private registredViews = [];
 
     public get defaultTiles() {
         // default tiles using sizes X and Y -> returns empty map
@@ -51,13 +51,17 @@ export class PageStore {
       this.registredViews.forEach(e => e.update())
     }
 
-    public register(view: WebGL){
-      this.registredViews.push(view)
+    public register(view: any){
+      this.registredViews.push(view);
     }
 
     public forceUpdate() {
       this.registredViews.forEach(e => {
-        e.animationHandler.updateMap();
+        if(e.animationHandler) {
+          e.animationHandler.updateMap();
+        } else {
+          e.updateMap();
+        }
       });
     }
 
