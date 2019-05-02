@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Server
 {
@@ -10,7 +6,7 @@ namespace Server
     {
             public int[][] valueMap;
             public Agent agent;
-            public Position goalPos;
+            public List<Position> goalPos;
             public const int RIGHT = 1;
             public const int LEFT = 2;
             public const int UP = 3;
@@ -25,6 +21,7 @@ namespace Server
              **/
             public APathfindingEngine(int[][] map)
             {
+                goalPos = new List<Position>();
                 valueMap = new int[map.Length][];
                 for (int x = 0; x < map.Length; x++)
                 {
@@ -43,7 +40,7 @@ namespace Server
 
                         if (map[x][y] == 4)
                         {
-                            goalPos = new Position(x, y);
+                            goalPos.Add(new Position(x, y));
                         }
                     }
                 }

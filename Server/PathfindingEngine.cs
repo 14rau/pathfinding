@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Server
 {
@@ -10,6 +10,37 @@ namespace Server
         }
 
         public override string[] calculatePath()
+        {
+            List<string> path = new List<string>();
+            while (goalPos.Count > 0)
+            {
+                Position target = new Position(-3,-3) ;
+                string[] pathstep = new string[0];
+                foreach(Position position in goalPos)
+                {
+                    if (target.getX() == -3 && target.getY() == -3) {
+                        target = position;
+                        pathstep = getPathTo(position);
+                        continue;
+                    }
+
+                    string[] tmp = getPathTo(position);
+                    if (tmp.Length < pathstep.Length)
+                    {
+                        target = position;
+                        pathstep = tmp;
+                    }
+
+                }
+                path.AddRange(pathstep);
+                agent.reset(target);
+                goalPos.Remove(target);
+            }
+            return path.ToArray();
+            
+        }
+
+        public string[] getPathTo(Position goalPos)
         {
             while (!agent.getPosition().Equals(goalPos))
             {
@@ -56,7 +87,7 @@ namespace Server
                     down = valueMap[agentPosX][agentPosY + 1] * agent.getPosition().getDown().getDistanceTo(goalPos);
                 else down = 0;
 
-                switch (getBestDirection(right,left,up,down))
+                switch (getBestDirection(right, left, up, down))
                 {
                     case RIGHT:
                         agent.goRight();
@@ -73,7 +104,7 @@ namespace Server
                     default:
                         break;
                 }
-                
+
             }
             return agent.getPath();
         }

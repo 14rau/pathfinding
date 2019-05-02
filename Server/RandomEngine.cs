@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Server
 {
@@ -10,8 +11,9 @@ namespace Server
 
         public override string[] calculatePath()
         {
+            List<string> path = new List<string>();
             Random random = new Random(DateTime.Now.Millisecond);
-            while (!agent.getPosition().Equals(goalPos))
+            while (goalPos.Count > 0)
             {
                 int agentPosX = agent.getPosition().getX();
                 int agentPosY = agent.getPosition().getY();
@@ -53,8 +55,14 @@ namespace Server
                         break;
                 }
 
+                if (goalPos.Contains(agent.getPosition()))
+                {
+                    path.AddRange(agent.getPath());
+                    agent.reset(agent.getPosition());
+                    goalPos.Remove(agent.getPosition());
+                }
             }
-            return agent.getPath();
+            return path.ToArray();
         }
 
         private Boolean isWall(Position pos)

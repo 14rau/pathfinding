@@ -11,32 +11,26 @@ namespace Server
 
         public override string[] calculatePath()
         {
-            while (!agent.getPosition().Equals(goalPos))
-            {
+            foreach (Position position in goalPos)
+                {
 
-                
-                int agentPosX = agent.getPosition().getX();
-                int agentPosY = agent.getPosition().getY();
-
-
-                if (agent.getPosition().getY() < goalPos.getY())
-                {
-                    agent.goDown();
+                while (!agent.getPosition().Equals(position))
+                    {
+                        if (agent.getPosition().getY() < position.getY())
+                            agent.goDown();
+                        
+                        if (agent.getPosition().getY() > position.getY())
+                            agent.goUp();
+                        
+                        if (agent.getPosition().getX() < position.getX())
+                            agent.goRight();
+                        
+                        if (agent.getPosition().getX() > position.getX())
+                            agent.goLeft();
+                        
+                    }
                 }
-                if (agent.getPosition().getY() > goalPos.getY())
-                {
-                    agent.goUp();
-                }
-                if (agent.getPosition().getX() < goalPos.getX())
-                {
-                    agent.goRight();
-                }
-                if (agent.getPosition().getX() > goalPos.getX())
-                {
-                    agent.goLeft();
-                }
-   
-            }
+  
             return agent.getPath();
         }
 
