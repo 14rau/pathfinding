@@ -6,12 +6,11 @@ using System.Linq;
 /// <summary>
 /// Author: Artem Zheleznyakov, April 2019
 /// 
-/// Simple implementation of A* pathfinding algorithm with emphasis on code readability.
+/// Simple implementation of multiple pathfinding algorithms with emphasis on code readability.
 /// Works only with rectangular maps and supports evaluation of 'flags' (start, end, obstacle, etc.) only of type interger 
 /// 
 /// Disclaimer:
 /// Code performance is not optimal and was not reviewed by the author.
-/// May contain bugs!
 /// Autor is not responsible for any damage caused by the code and etc..
 /// </summary>
 /// 
@@ -347,7 +346,7 @@ namespace PathLib
         /// Function uses Dijkstra’s path algorithm to find the shortest path on the given map
         /// </summary>
         /// <returns>Returns shortest path (or null if no path was found) in form of a list of 'Position's</returns>
-        public IEnumerable<Position> dijkstrasBest()
+        public IEnumerable<Position> dijkstrasBest(bool includeStartSquare = false)
         {
             //Init current square -> first square is 'start square'
             Square currentSquare = this.startSquare;
@@ -367,12 +366,28 @@ namespace PathLib
                 //Get walkable squares and evaluate each
                 getNextSquareCollection(currentSquare).ForEach(sq =>
                 {
-                    //If square has been visited already -> exit
-                    //If gCost of the square has been inited or gCost of current path is lower than the priveous one -> update parent & gCost
-                    //If open queue does not contain this square already -> add it to the queue
-                    if (visitedQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY) != null) return;
-                    if (sq.gCost == 0 || currentSquare.gCost + 1 < sq.gCost) sq.update(currentSquare, currentSquare.gCost + 1);
-                    if (openQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY) == null) openQueue.Add(sq);
+                    //Check whether or not this square have been visited alredy
+                    //If yes -> check for updates and if updates are applied add this square to the open queue
+                    //If this is a new square update (set a parent and gCost) and add it to the open queue
+                    Square visitedSquare = visitedQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY);
+                    if (visitedSquare != null)
+                    {
+                        if (visitedSquare.update(currentSquare, currentSquare.gCost + 1))
+                        {
+                            if(!visitedSquare.EqualTo(this.goalSquare))
+                                openQueue.Add(visitedSquare);
+                        }
+                    }
+                    else
+                    {
+                        Square openSquare = openQueue.FirstOrDefault(i => i.posX == sq.posX && i.posY == sq.posY);
+                        if (openSquare != null) openSquare.update(currentSquare, currentSquare.gCost + 1);
+                        else
+                        {
+                            sq.update(currentSquare, currentSquare.gCost + 1);
+                            openQueue.Add(sq);
+                        }
+                    }
                 });
                 //Mark this square by adding it to the visited queue and remove it from the open queue since all possibilities were evaluated
                 openQueue.Remove(currentSquare);
@@ -411,7 +426,12 @@ namespace PathLib
                 //Set direction of the movement
                 fSquare.setMovementDirection();
                 //Add new position
-                shortestPath.Add(fSquare); //new Position { X = fSquare.posX, Y = fSquare.posY, direction = fSquare.movDirection }
+                //Depending on 'includeStartSquare' variable add or ignore start square
+                if (!fSquare.EqualTo(this.startSquare))
+                    shortestPath.Add(fSquare);
+                else
+                    if (includeStartSquare)
+                        shortestPath.Add(fSquare);
                 //Set next square to be the parent of the current square
                 fSquare = fSquare.parent;
                 //If start square is reached -> break out of the loop
