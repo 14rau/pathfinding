@@ -20,6 +20,20 @@ interface IEditorProps {
   pageStore?: PageStore;
 }
 
+const brush = [{
+  type: "1x1",
+  value: 1
+},{
+  type: "2x2",
+  value: 2
+},{
+  type: "3x3",
+  value: 3
+},{
+  type: "4x4",
+  value: 4
+}]
+
 @inject("pageStore")
 @observer
 export class Editor extends Component<IEditorProps> {
@@ -97,7 +111,11 @@ export class Editor extends Component<IEditorProps> {
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div className="side">
             <div className="btn" style={{ marginTop: "16px" }} onClick={() => console.log(JSON.stringify(this.props.pageStore.mapData))}>show in console</div>
-
+            
+            <h4>Brush</h4>
+              <select style={{ width: "100%" }} onChange={e => this.props.pageStore.brush = parseInt(e.target.value)}>
+                {brush.map(e => <option value={e.value}>{e.type}</option>)}
+              </select>
     
             {/* Tileselect */}
             <h4>Tiles</h4>

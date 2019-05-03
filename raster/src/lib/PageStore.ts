@@ -1,15 +1,16 @@
-import { observable, action } from "mobx";
+import { observable, action, toJS } from "mobx";
 import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
 
 export class PageStore {
-    @observable public sizeX = 60;
-    @observable public sizeY = 60;
+    @observable public sizeX = 100;
+    @observable public sizeY = 100;
     @observable public mapData = this.defaultTiles;
     @observable public movement = ["right", "right", "right", "right", "right", "right", ];
     @observable public currentView = "mb";
-    @observable public algorithm = 3;
+    @observable public algorithm = 0;
     @observable public mouseDown = false;
+    @observable public brush = 1;
     private registredViews = [];
 
     public get defaultTiles() {
@@ -32,6 +33,19 @@ export class PageStore {
                 xRow.push(1);
               }
             }
+          }
+          ret.push(xRow);
+        }
+        return ret;
+      }
+
+      public static emptySet(x, y) {
+        // default tiles using sizes X and Y -> returns empty map
+        let ret = [];
+        for(let x = 0; x < x; x++) {
+          let xRow = [];
+          for(let y = 0; y < y; y++) {
+            xRow.push(1);
           }
           ret.push(xRow);
         }
@@ -68,7 +82,7 @@ export class PageStore {
     @autobind
     @action
     public updateMap(mapData) {
-      this.forceUpdate();
       this.mapData = mapData;
+      this.forceUpdate();
     }
 }

@@ -5,8 +5,9 @@ import { Editor } from "../Editor";
 import { inject, observer } from "mobx-react";
 import { toJS, observable } from "mobx";
 import autobind from "autobind-decorator";
+import { ShiftKeys } from "@blueprintjs/core/lib/esm/components/hotkeys/hotkeyParser";
 // constants
-const tileSize = 10;
+const tileSize = 6;
 interface IEditor2Props {
     pageStore?: PageStore;
     type: FieldType;
@@ -17,10 +18,13 @@ interface IEditor2Props {
 @observer
 export class Grid2 extends React.Component<IEditor2Props>{
     @observable private drawing = false;
+    private pos;
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
+    private changes: Map<string, any>;
 
     public componentDidMount() {
+        this.changes = new Map();
         this.props.pageStore.register(this);
         this.ctx = this.canvas.getContext("2d");
         this.canvas.addEventListener("mousemove", this.handleMouse, false);
@@ -31,19 +35,27 @@ export class Grid2 extends React.Component<IEditor2Props>{
 
     @autobind
     private togglePaint() {
-        if(this.drawing) this.props.pageStore.forceUpdate();
+        if(this.drawing) {
+            this.changes.forEach(e => {
+                this.props.onChange(e.y, e.x, this.props.type);
+            });
+            this.updateMap();
+            this.props.pageStore.forceUpdate();
+            this.pos = null;
+        };
         this.drawing = !this.drawing;
     }
 
-    @autobind
-    private drawMouse(x, y) {
-        this.ctx.fillStyle = "rgba(255,0,0,0.3)";
-        this.ctx.fillRect(x * tileSize, y*tileSize, tileSize, tileSize);
-        this.ctx.fillStyle = "";
-    }
+    // @autobind
+    // private drawMouse(x, y) {
+    //     this.ctx.fillStyle = "rgba(255,0,0,0.3)";
+    //     this.ctx.fillRect(x * tileSize, y*tileSize, tileSize * this.props.pageStore.brush, tileSize * this.props.pageStore.brush);
+    //     this.ctx.fillStyle = "";
+    // }
 
     @autobind
     private handleMouse(e: MouseEvent) {
+
         let x;
         let y;
         if (e.pageX || e.pageY) { 
@@ -58,11 +70,49 @@ export class Grid2 extends React.Component<IEditor2Props>{
         y -= this.canvas.offsetTop;
         y = Math.floor(y/tileSize);
         x = Math.floor(x/tileSize);
-        this.updateMap();
-        this.drawMouse(x, y)
         if(!this.drawing) return;
-        this.props.onChange(y, x, this.props.type)
+        try {
+            if(this.pos) {
+                let oldPos = [this.pos[0], this.pos[1]];
+                this.pos = [y,x];
+                this.line(oldPos[1], oldPos[0], this.pos[1], this.pos[0]);
+            } else {
+                this.pos = [y,x];
+                this.draw(this.props.type, x * tileSize, y * tileSize, tileSize, tileSize);
+            }
+
+            // for(let i = this.pos[0]; i < oldPos[0]; i++) {
+            //     for(let p = this.pos[1]; p < oldPos[1]; p++) {
+            //         this.draw(this.props.type, p * tileSize, i * tileSize, tileSize, tileSize);
+            //         this.changes.set(`${p}|${i}`, {p, i});        
+            //     }    
+            // }
+
+            
+
+        } catch (err) {}
     }
+
+    /**
+     * Bresenham Algorithm
+     */
+    private line(x0, y0, x1, y1) {
+        let dx = Math.abs(x1 - x0);
+        let dy = Math.abs(y1 - y0);
+        let sx = (x0 < x1) ? 1 : -1;
+        let sy = (y0 < y1) ? 1 : -1;
+        let err = dx - dy;
+
+        while(true) {
+            this.draw(this.props.type, x0 * tileSize, y0 * tileSize, tileSize, tileSize);
+            this.changes.set(`${y0}|${x0}`, {y: y0, x: x0});
+            if((x0 === x1) && (y0 === y1)) break;
+            let e2 = 2*err;
+            if(e2 > -dy) {err -= dy; x0 += sx;}
+            if(e2 < dx) {err += dx; y0 += sy; }
+        }
+    }
+    
 
     public updateMap() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -71,17 +121,14 @@ export class Grid2 extends React.Component<IEditor2Props>{
         }));
     }
 
-
     public render() {
         return <canvas ref={e => this.canvas = e} width="800" height="800" style={{ border: '1px solid black'}} id="editor"></canvas>
     }
 
-    private draw(type: FieldType,x ,y, width, height) {
-        
+    private draw(type: FieldType, x, y, width, height) {
         let color = Editor.options.find(e => e.value === type).color
         this.ctx.fillStyle = color;
         this.ctx.fillRect(x, y, width, height);
         this.ctx.fillStyle = "";
     }
-
 }
