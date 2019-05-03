@@ -39,6 +39,7 @@ export class Grid2 extends React.Component<IEditor2Props>{
             this.changes.forEach(e => {
                 this.props.onChange(e.y, e.x, this.props.type);
             });
+            this.changes.clear();
             this.updateMap();
             this.props.pageStore.forceUpdate();
             this.pos = null;
