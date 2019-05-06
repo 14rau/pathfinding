@@ -24,10 +24,10 @@ export class PageStore {
       this.loadMaps();
     }
 
+    @autobind
     private async loadMaps() {
       let data = await this.apiController.post("pathfinding/map/", {});
       this.maps = [...maps, ...data.maps];
-      this.forceUpdate();
     }
 
     @autobind

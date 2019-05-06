@@ -143,7 +143,7 @@ export class Editor extends Component<IEditorProps> {
               }}/>
             </div>
             <select style={{ width: "100%" }} onChange={e => this.mapLoader = e.target.value}>
-              {maps.map(e => <option value={JSON.stringify(e.map)}>{e.name}</option>)}
+              {this.props.pageStore.maps.map(e => <option value={JSON.stringify(e.map)}>{e.name}</option>)}
             </select>
 
           </div>
@@ -164,6 +164,7 @@ export class Editor extends Component<IEditorProps> {
             />
             <Button text="Upload" onClick={this.props.pageStore.uploadMap}/>
             <Button text="Reset" onClick={this.props.pageStore.reset}/>
+            <input value={this.props.pageStore.mapName} onChange={e => this.props.pageStore.mapName = e.target.value}/>
           </div>
         </div>
       </>
