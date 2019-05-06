@@ -3,11 +3,10 @@ import { PageStore } from "../../../lib/PageStore";
 import { FieldType } from "../Tile/Tile";
 import { Editor } from "../Editor";
 import { inject, observer } from "mobx-react";
-import { toJS, observable } from "mobx";
+import { observable } from "mobx";
 import autobind from "autobind-decorator";
-import { ShiftKeys } from "@blueprintjs/core/lib/esm/components/hotkeys/hotkeyParser";
 // constants
-const tileSize = 6;
+const tileSize = 12;
 interface IEditor2Props {
     pageStore?: PageStore;
     type: FieldType;
@@ -81,16 +80,6 @@ export class Grid2 extends React.Component<IEditor2Props>{
                 this.pos = [y,x];
                 this.draw(this.props.type, x * tileSize, y * tileSize, tileSize, tileSize);
             }
-
-            // for(let i = this.pos[0]; i < oldPos[0]; i++) {
-            //     for(let p = this.pos[1]; p < oldPos[1]; p++) {
-            //         this.draw(this.props.type, p * tileSize, i * tileSize, tileSize, tileSize);
-            //         this.changes.set(`${p}|${i}`, {p, i});        
-            //     }    
-            // }
-
-            
-
         } catch (err) {}
     }
 
@@ -108,9 +97,13 @@ export class Grid2 extends React.Component<IEditor2Props>{
             this.draw(this.props.type, x0 * tileSize, y0 * tileSize, tileSize, tileSize);
             this.changes.set(`${y0}|${x0}`, {y: y0, x: x0});
             if((x0 === x1) && (y0 === y1)) break;
-            let e2 = 2*err;
-            if(e2 > -dy) {err -= dy; x0 += sx;}
-            if(e2 < dx) {err += dx; y0 += sy; }
+            let e2 = 2 * err;
+            if(e2 > -dy) {
+                err -= dy; x0 += sx;
+            }
+            if(e2 < dx) {
+                err += dx; y0 += sy;
+            }
         }
     }
     

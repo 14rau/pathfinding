@@ -162,6 +162,8 @@ export class Editor extends Component<IEditorProps> {
                 }))
               }
             />
+            <Button text="Upload" onClick={this.props.pageStore.updateMap}/>
+            <Button text="Reset" onClick={this.props.pageStore.reset}/>
           </div>
         </div>
       </>

@@ -145,13 +145,13 @@ export class AnimationHandler{
                     // our problem is, that the coordinate system in the 3d view starts on the bottom left, the array kinda starts in the top left. So we need to invert some values
                     case 1:
                         let wallRng = Math.random()
-                        const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1+wallRng, 0, 0, 0, 0.45 );
+                        const wall = new ModelInstance(pi, this.map2d.length - ei - 1, 1.04+Math.max(wallRng, 0.01), 0, 0, 0, 0.45 );
                         this.modelRender.addInstance(wall, 'wall');
 
                         const wall2 = new ModelInstance(pi, this.map2d.length - ei - 1, 1, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(wall2, 'wall');
 
-                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.1+wallRng, 0, 0, 0, 0.49 );
+                        const top = new ModelInstance(pi, this.map2d.length - ei - 1, 1.05+Math.max(wallRng, 0.01), 0, 0, 0, 0.49 );
                         this.modelRender.addInstance(top, 'top');
                         
                         break;
@@ -184,10 +184,10 @@ export class AnimationHandler{
                         const midLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2, 0, 0, 0, 0.5 );
                         this.modelRender.addInstance(midLevel, 'wall');
 
-                        const secondLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2 + rng, 0, 0, 0, 0.45 );
+                        const secondLevel = new ModelInstance(pi, this.map2d.length - ei - 1, 2 + (Math.max(rng, 0.3)), 0, 0, 0, 0.45 );
                         this.modelRender.addInstance(secondLevel, 'wall');
 
-                        const roof = new ModelInstance(pi, this.map2d.length - ei - 1, 2.1+rng, 0, 0, 0, 0.49 );
+                        const roof = new ModelInstance(pi, this.map2d.length - ei - 1, 2.1+(Math.max(rng, 0.3)), 0, 0, 0, 0.49 );
                         this.modelRender.addInstance(roof, 'top');
                         break;
                     case 8:
