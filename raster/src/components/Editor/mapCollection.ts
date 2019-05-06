@@ -1,1 +1,0 @@
-export let maps = [...window.localStorage.getItem("maps") ? JSON.parse(window.localStorage.getItem("maps")) : []]

@@ -8,7 +8,6 @@ import { Grid } from "./Grid/Grid";
 import { Hints } from "./Hints/Hints";
 import { PageStore } from "../../lib/PageStore";
 import { Button, Overlay, Classes } from "@blueprintjs/core";
-import { maps } from "./mapCollection";
 import { Grid2 } from "./Grid2/Grid2";
 
 
@@ -38,7 +37,7 @@ const brush = [{
 @observer
 export class Editor extends Component<IEditorProps> {
 
-  @observable private mapLoader = JSON.stringify(maps[0].map);
+  @observable private mapLoader = [];
   @observable private showImport = false;
 
   public static defaultProps = {
@@ -50,7 +49,6 @@ export class Editor extends Component<IEditorProps> {
   // track the editor state -> in which mode are we? Set Goal, Walls, Start?
   @observable private editorState = FieldType.NOTHING;
   @observable private matrixInput = "";
-  @observable private matrixName = "";
 
   public static options = [{
     label: "House",
@@ -90,15 +88,9 @@ export class Editor extends Component<IEditorProps> {
       <>
         <Overlay className={Classes.OVERLAY_SCROLL_CONTAINER} isOpen={this.showImport} onClose={() => this.showImport = false}>
           <div style={{ background: "ghostwhite", width: "400px", height: "400px" }}>
-            <input value={this.matrixName} onChange={e => this.matrixName = e.target.value} />
             <textarea value={this.matrixInput} onChange={e => this.matrixInput = e.target.value} />
             <Button text="import" onClick={() => {
               let mapData = JSON.parse(this.matrixInput)
-              if (window.localStorage.getItem("maps")) {
-                window.localStorage.setItem("maps", JSON.stringify([{ map: this.matrixInput, name: this.matrixName }, ...JSON.parse(window.localStorage.getItem("maps"))]))
-              } else {
-                window.localStorage.setItem("maps", JSON.stringify([{ map: this.matrixInput, name: this.matrixName }]))
-              }
               mapData.forEach((y, yi) => {
                 y.forEach((x, xi) => {
                   this.onChangeData(yi, xi, x);
@@ -127,13 +119,12 @@ export class Editor extends Component<IEditorProps> {
             <h4>Maps</h4>
             <div style={{display: "flex", flexDirection: "column"}}>
               <Button text="load matrix" onClick={() => {
-                let mapData = JSON.parse(JSON.parse(toJS(this.mapLoader)))
-                mapData.forEach((y, yi) => {
+                this.mapLoader.forEach((y, yi) => {
                   (y as any).forEach((x, xi) => {
                     this.onChangeData(yi, xi, x);
                   })
                 })
-                this.props.pageStore.updateMap(mapData);
+                this.props.pageStore.updateMap(this.mapLoader);
               }}>
 
               </Button>
@@ -142,7 +133,7 @@ export class Editor extends Component<IEditorProps> {
                 this.showImport = true;
               }}/>
             </div>
-            <select style={{ width: "100%" }} onChange={e => this.mapLoader = e.target.value}>
+            <select style={{ width: "100%" }} onChange={e => this.mapLoader = JSON.parse(e.target.value)}>
               {this.props.pageStore.maps.map(e => <option value={JSON.stringify(e.map)}>{e.name}</option>)}
             </select>
 
