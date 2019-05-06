@@ -27,6 +27,9 @@ export class PageStore {
     @autobind
     private async loadMaps() {
       let data = await this.apiController.post("pathfinding/map/", {});
+      if (!window.localStorage.getItem("maps")) {
+        window.localStorage.setItem("maps", JSON.stringify([]))
+      }
       this.maps = [...maps, ...data.maps];
     }
 
