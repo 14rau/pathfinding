@@ -26,7 +26,7 @@ export class PageStore {
 
     private async loadMaps() {
       let data = await this.apiController.post("pathfinding/map/", {});
-      this.maps = [...maps, ...data];
+      this.maps = [...maps, ...data.maps];
     }
 
     public async uploadMap() {
