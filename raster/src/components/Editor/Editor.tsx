@@ -155,9 +155,7 @@ export class Editor extends Component<IEditorProps> {
                 }))
               }
             />
-            <Button text="Upload" onClick={this.props.pageStore.uploadMap}/>
             <Button text="Reset" onClick={this.props.pageStore.reset}/>
-            <input value={this.props.pageStore.mapName} onChange={e => this.props.pageStore.mapName = e.target.value}/>
           </div>
         </div>
       </>

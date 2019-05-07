@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react"
 import './App.css';
 import { Editor } from "./components/Editor/Editor";
-import { Tabs, Tab, Button, RadioGroup, Radio } from "@blueprintjs/core";
+import { Tabs, Tab, Button, RadioGroup, Radio, ControlGroup, InputGroup } from "@blueprintjs/core";
 import { WebGL } from "./lib/WebGL";
 import { PageStore } from "./lib/PageStore";
 import { ApiController } from "./lib/Api/Api";
@@ -47,8 +47,9 @@ class App extends Component<IAppProps> {
           overflow: "auto"
       }}>
           <Button icon="cog" onClick={() => this.showSettings = !this.showSettings}/>
-          <Button icon="log-out" intent="danger" onClick={() => {
+          <Button icon="log-out" intent="danger" onClick={async () => {
             window.localStorage.setItem("token", "");
+            await this.props.apiController.post("pathfinding/logout/", { session: this.props.pageStore.token })
             window.location.assign("/");
           }}/>
           <div style={{padding: "5px"}}>
@@ -66,6 +67,10 @@ class App extends Component<IAppProps> {
               <Radio label="Placeholder" value={6} />
             </RadioGroup>
             <Editor map/>
+            <ControlGroup fill={true} vertical={false}>
+              <InputGroup value={this.props.pageStore.mapName} onChange={e => this.props.pageStore.mapName = e.target.value}/>
+              <Button text="Upload" onClick={this.props.pageStore.uploadMap}/>
+            </ControlGroup>
           </div>
       </div>}
     {this.loading && <Loading/>}
