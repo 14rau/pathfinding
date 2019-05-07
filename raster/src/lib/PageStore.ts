@@ -37,7 +37,7 @@ export class PageStore {
     public async checkAuthenticated() {
       try {
         if(this._token) {
-          let response = await this.apiController.post("/valid", {token: this._token});
+          let response = await this.apiController.post("pathfinding/valid/", {session: this._token});
           this.isAuthenticated = response.authenticated;
         }
       } catch (err) {

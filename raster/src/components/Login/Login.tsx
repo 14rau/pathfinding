@@ -15,8 +15,8 @@ interface ILoginProps {
 @inject("apiController", "pageStore")
 @observer
 export class Login extends React.Component<ILoginProps>{
-    @observable private username = "";
-    @observable private password = "";
+    @observable private user = "";
+    @observable private pass = "";
     @observable private error = "";
     @observable private loading = false;
 
@@ -35,22 +35,22 @@ export class Login extends React.Component<ILoginProps>{
         return <div style={{width: "400px", height: "200px", margin: "auto", padding: "20px", background: "steelblue",}}>
             <img src={logo}/>
             <ControlGroup fill={true} vertical={false}>
-                <InputGroup value={this.username} onChange={e => this.username = e.target.value}/>
+                <InputGroup value={this.user} onChange={e => this.user = e.target.value}/>
                 <div style={{border: "1px solid #ddd"}}><Icon icon="user" intent="success" iconSize={24}/></div>
             </ControlGroup>
             <ControlGroup fill={true} vertical={false}>
-                <InputGroup value={this.password} onChange={e => this.password = e.target.value}/>
+                <InputGroup value={this.pass} onChange={e => this.pass = e.target.value}/>
                 <div style={{border: "1px solid #ddd"}}><Icon icon="key" intent="success" iconSize={24}/></div>
             </ControlGroup>
             <Button loading={this.loading} onClick={async () => {
                 this.loading = true;
                 try {
-                    let { username, password } = this;
-                    let response = await this.props.apiController.post("login/", { username, password });
-                    if(response.token) {
-                        this.props.pageStore.token = response.token;
+                    let { user, pass } = this;
+                    let response = await this.props.apiController.post("pathfinding/login/", { user, pass });
+                    if(response.session) {
+                        this.props.pageStore.token = response.session;
                         await this.props.pageStore.checkAuthenticated();
-                        window.localStorage.setItem("token", response.token);
+                        window.localStorage.setItem("token", response.session);
                     } else {
                         this.error = "Login was invalid"
                     }
