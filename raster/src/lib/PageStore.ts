@@ -10,17 +10,39 @@ export class PageStore {
     @observable public mapData = this.defaultTiles;
     @observable public movement = [];
     @observable public currentView = "mb";
-    @observable public algorithm = 0;
+    @observable public algorithm = 2;
     @observable public mouseDown = false;
     @observable public brush = 1;
     @observable public maps = [];
     @observable public mapName = "Default";
+    @observable public isAuthenticated = false;
+    @observable private _token =  window.localStorage.getItem("token");
+
+    public get token() {
+      return this._token;
+    }
+
+    public set token(token: string) {
+      this._token = token;
+    }
 
     private registredViews = [];
     
     constructor() {
       this.apiController = new ApiController("8080", "localhost", "http");
       this.loadMaps();
+    }
+
+    @autobind
+    public async checkAuthenticated() {
+      try {
+        if(this._token) {
+          let response = await this.apiController.post("/valid", {token: this._token});
+          this.isAuthenticated = response.authenticated;
+        }
+      } catch (err) {
+        this.isAuthenticated = false; //TODO Debug
+      }
     }
 
     @autobind

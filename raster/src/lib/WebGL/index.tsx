@@ -3,7 +3,7 @@ import { AnimationHandler } from "./Init/index";
 import { inject, observer } from 'mobx-react';
 import { PageStore } from '../PageStore';
 import { observable, toJS } from 'mobx';
-import { Button } from '@blueprintjs/core';
+import { Button, ButtonGroup } from '@blueprintjs/core';
 
 interface IWebGLProps {
     pageStore?: PageStore;
@@ -41,17 +41,19 @@ export class WebGL extends React.Component<IWebGLProps>{
     
     render() { 
         return <div style={{display: "-webkit-box"}}>
-            <canvas id="webgl" width="800" height="800" style={{ border: '1px solid black'}}></canvas>
+            <canvas id="webgl" width="350" height="350" style={{ border: '1px solid black'}}></canvas>
             <div>
                 <div>
-                    <Button
-                        onClick={
-                            this.animationHandler ?
-                            () => this.animationHandler.resetMovement() :
-                            () => {}}
-                        text="Reset Agent"
-                    />
-                    <Button onClick={this.animationHandler ? () => this.animationHandler.toggleMovement() : () => {}} text={`${this.animationHandler && this.animationHandler.moving ? "Stop" : "Start" } Movement`}/>
+                    <ButtonGroup vertical>
+                        <Button
+                            onClick={
+                                this.animationHandler ?
+                                () => this.animationHandler.resetMovement() :
+                                () => {}}
+                            text="Reset Position"
+                        />
+                        <Button onClick={this.animationHandler ? () => this.animationHandler.toggleMovement() : () => {}} text={`Toggle Movement`}/>
+                    </ButtonGroup>
                 </div>
                 <ul style={{listStyleType: "none", overflow: "auto", maxHeight: "750px"}}>
                     {this.animationHandler ? this.animationHandler.movementArray.map(e =>

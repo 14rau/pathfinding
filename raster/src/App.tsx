@@ -11,7 +11,8 @@ import { Loading } from "./components/Loading/Loading";
 import autobind from "autobind-decorator";
 
 interface IAppProps {
-  pageStore?: PageStore; 
+  pageStore?: PageStore;
+  apiController?: ApiController;
 }
 
 
@@ -19,32 +20,60 @@ interface IAppProps {
 @inject("pageStore")
 @observer
 class App extends Component<IAppProps> {
-
-  private apiController = new ApiController("8080", "localhost", "http");
+  @observable private showSettings = false;
   @observable private loading = false;
+
+  public async componentDidMount() {
+    try {
+        await this.props.pageStore.checkAuthenticated();
+    } catch (err) {
+        alert("Could not verify login token")
+    }
+    if(this.props.pageStore.isAuthenticated) {
+        this.forceUpdate();
+    }
+}
 
   public render() {
 
     return <>
+        {!this.showSettings ? <div style={{position: "absolute", right: 1}}><Button icon="cog" onClick={() => this.showSettings = !this.showSettings}/></div> : <div style={{
+          position: "absolute",
+          width: "300px",
+          height: "500px",
+          right: 1,
+          background: "steelblue",
+          border: "1px solid #ddd",
+          overflow: "auto"
+      }}>
+          <Button icon="cog" onClick={() => this.showSettings = !this.showSettings}/>
+          <Button icon="log-out" intent="danger" onClick={() => {
+            window.localStorage.setItem("token", "");
+            window.location.assign("/");
+          }}/>
+          <div style={{padding: "5px"}}>
+            <RadioGroup
+              label="Algorithm"
+              onChange={e => this.props.pageStore.algorithm = parseInt((e.target as any).value)}
+              selectedValue={this.props.pageStore.algorithm}
+              >
+              <Radio label="Random" value={0} />
+              <Radio label="A*" value={1} />
+              <Radio label="Djakstra" value={2} />
+              <Radio label="Genetic - Feed-forward Network" value={3} />
+              <Radio label="Selfmade" value={4} />
+              <Radio label="IDGAF" value={5} />
+              <Radio label="Placeholder" value={6} />
+            </RadioGroup>
+            <Editor map/>
+          </div>
+      </div>}
     {this.loading && <Loading/>}
     <Tabs vertical id="TabsExample" selectedTabId={this.props.pageStore.currentView} onChange={this.props.pageStore.setView}>
       <Tab id="ng" title="Editor" panel={<Editor />} />
-      <Tab id="mb" title="3d - View" panel={<WebGL />} />
+      <Tab id="mb" title="View" panel={<WebGL />} />
+      <Button text="Calculate Path" onClick={this.sendData}/>
     </Tabs>
-    <RadioGroup
-      label="Algorithm"
-      onChange={e => this.props.pageStore.algorithm = parseInt((e.target as any).value)}
-      selectedValue={this.props.pageStore.algorithm}
-    >
-      <Radio label="Random" value={0} />
-      <Radio label="A*" value={1} />
-      <Radio label="Djakstra" value={2} />
-      <Radio label="Genetic - Feed-forward Network" value={3} />
-      <Radio label="Selfmade" value={4} />
-      <Radio label="IDGAF" value={5} />
-      <Radio label="Placeholder" value={6} />
-    </RadioGroup>
-    <Button text="Send Requests" onClick={this.sendData}/>
     </>
   }
 
@@ -65,7 +94,7 @@ class App extends Component<IAppProps> {
   private async sendData() {
     this.loading = true;
     try {
-      let request = await this.apiController.post("pathfinding", {
+      let request = await this.props.apiController.post("pathfinding", {
           map: toJS(this.props.pageStore.mapData),
           algorithm: toJS(this.props.pageStore.algorithm),
           settings: [ 0, 1, 3, 4 ]

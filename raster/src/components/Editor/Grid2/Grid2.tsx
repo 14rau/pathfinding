@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import { observable } from "mobx";
 import autobind from "autobind-decorator";
 // constants
-const tileSize = 12;
+const tileSize = 5;
 interface IEditor2Props {
     pageStore?: PageStore;
     type: FieldType;
@@ -116,7 +116,7 @@ export class Grid2 extends React.Component<IEditor2Props>{
     }
 
     public render() {
-        return <canvas ref={e => this.canvas = e} width="800" height="800" style={{ border: '1px solid black'}} id="editor"></canvas>
+        return <canvas ref={e => this.canvas = e} width="245" height="245" style={{ border: '1px solid black'}} id="editor"></canvas>
     }
 
     private draw(type: FieldType, x, y, width, height) {

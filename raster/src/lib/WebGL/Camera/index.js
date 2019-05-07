@@ -22,15 +22,19 @@ export default class Camera {
             switch(e.key) {
                 case "w":
                     this.y += 1;
+                    console.log("this.y", this.y)
                     break;
                 case "a":
                     this.x -= 1;
+                    console.log("this.x", this.x)
                     break;
                 case "s":
                     this.y -= 1;
+                    console.log("this.y", this.y)
                     break;
                 case "d":
                     this.x += 1;
+                    console.log("this.x", this.x)
                     break;
             }
             this.generateMatrices();
@@ -42,6 +46,8 @@ export default class Camera {
     onWheelDrag = (dx, dy) => {
         this.pitch -= dy * 0.1;
         this.roll -= dx * 0.1;
+        console.log("this.pitch", this.pitch);
+        console.log("this.roll", this.roll);
         this.generateMatrices();
     }
 
@@ -53,6 +59,7 @@ export default class Camera {
 
     onWheel = (e) => {
         this.z += e.deltaY * 0.01;
+        console.log("this.z", this.z)
         this.generateMatrices();
     }
 

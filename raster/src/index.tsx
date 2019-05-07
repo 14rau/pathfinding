@@ -8,7 +8,8 @@ import { Provider } from 'mobx-react';
 import { PageStore } from './lib/PageStore';
 import "@blueprintjs/core/lib/css/blueprint.css"
 import "@blueprintjs/icons/lib/css/blueprint-icons.css"
-import App from './App';
+import { ApiController } from './lib/Api/Api';
+import { PageWrapper } from './PageWrapper';
 
 // sideeffect
 
@@ -16,9 +17,9 @@ import App from './App';
 
 
 ReactDOM.render(
-    <Provider pageStore={new PageStore()}>
+    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", "localhost", "http")}>
         <div className="bp3-dark">
-            <App/>
+            <PageWrapper/>
         </div>
     </Provider>
     , document.getElementById('root'));

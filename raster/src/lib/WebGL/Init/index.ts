@@ -242,7 +242,7 @@ export class AnimationHandler{
 
     private initCameras() {
         this.cameras = new Map();
-        this.cameras.set("default", new Camera(8, -5, 40, -20, 0, 0, 0.1, 1000, 40));
+        this.cameras.set("default", new Camera(24, 23, 77, -1.7, 0.1, 0, 0.1, 1000, 40));
     }
 
     private initLights() {

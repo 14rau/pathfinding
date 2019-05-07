@@ -14,6 +14,7 @@ import { Grid2 } from "./Grid2/Grid2";
 
 // -> This is the data we want to show
 interface IEditorProps {
+  map?: boolean;
   x?: number;
   y?: number;
   pageStore?: PageStore;
@@ -84,6 +85,7 @@ export class Editor extends Component<IEditorProps> {
     if (this.props.pageStore == null) {
       return <div>Page Store not injected</div>
     }
+    if(this.props.map) return <Grid2 type={null} onChange={() => {}} />
     return (
       <>
         <Overlay className={Classes.OVERLAY_SCROLL_CONTAINER} isOpen={this.showImport} onClose={() => this.showImport = false}>
