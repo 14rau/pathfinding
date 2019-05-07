@@ -18,7 +18,7 @@ namespace Server
 
             address = "http://"+ip+":"+port+"/";
 
-            Webserver webServer = new Webserver(SendResponse, address+"pathfinding/", address + "pathfinding/map/", address + "pathfinding/save/");
+            Webserver webServer = new Webserver(SendResponse, address);
             webServer.Run();
             Console.WriteLine("Press a key to quit.");
             Console.ReadKey();
@@ -54,11 +54,8 @@ namespace Server
 
         public static JObject SendResponse(HttpListenerRequest request)
         {
-
-            if (request.Url.Equals(address+"pathfinding/map/"))
-                return createDefaultMapsObject();
-
-            int[][] mapArray;
+            string[] uriSegments = request.Url.Segments;
+            string endpoint = uriSegments[uriSegments.Length - 1];
 
             string text;
             using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
@@ -66,59 +63,96 @@ namespace Server
                 text = reader.ReadToEnd();
             }
 
-            JObject jsonObj = JObject.Parse(text);
-           
-            if (request.Url.Equals(address + "pathfinding/save/"))
+            JObject requestJson = JObject.Parse(text);
+            JObject responseJson = new JObject();
+
+            string sessionKey = (string)requestJson["session"];
+
+
+            switch (endpoint)
             {
-                string name = (string)jsonObj["name"];
+                case "map/":
+                    return createDefaultMapsObject();
+                case "login/":
+                    string user = (string)requestJson["user"];
+                    string pass = (string)requestJson["pass"];
+                    if (ServerSession.getInstance().validateUser(user, pass))
+                    {
+                        string newSessionKey = ServerSession.getInstance().createNewSessionKey(user);
+                        responseJson.Add("session", newSessionKey);
+                        return responseJson;
+                    }
+                    else
+                    {
+                        responseJson.Add("session", null);
+                        return responseJson;
+                    }
+                case "logout/":
+                    ServerSession.getInstance().endSession(sessionKey);
+                    return responseJson;
+                case "valid/":
+                    responseJson.Add("isValid", ServerSession.getInstance().isSessionValid(sessionKey));
+                    return responseJson;
+                case "save/":
+                    validateSession(sessionKey);
+                    string name = (string)requestJson["name"];
 
-                using (StreamWriter file = File.CreateText(Path.Combine(getDir(),name+".json")))
-                using (JsonTextWriter writer = new JsonTextWriter(file))
-                {
-                    jsonObj.WriteTo(writer);
-                }
-                return new JObject();
-            }
-
-            JArray arr = (JArray)jsonObj["map"];
-
-            int algorithm = (jsonObj["algorithm"] != null)?(int)jsonObj["algorithm"] :0;
-
-            if (jsonObj["settings"] != null) { 
-                JArray settings = (JArray)jsonObj["settings"];
-                mapArray = applyCustomOptions(arr.ToObject<int[][]>(), settings.ToObject<int[]>());
-            }
-            else
-                mapArray = arr.ToObject<int[][]>();
-
-            JObject responseObject = new JObject();
-
-            switch (algorithm)
-            {
-                case 0:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
-                    return responseObject;
-                case 1:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateAStar(mapArray)));
-                    return responseObject;
-                case 2:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateDijkstra(mapArray)));
-                    return responseObject;
-                case 3:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculateGeneric(mapArray)));
-                    return responseObject;
-                case 4:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathOwn(mapArray)));
-                    return responseObject;
-                case 5:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathDumb(mapArray)));
-                    return responseObject;
+                    using (StreamWriter file = File.CreateText(Path.Combine(getDir(), name + ".json")))
+                    using (JsonTextWriter writer = new JsonTextWriter(file))
+                    {
+                        requestJson.WriteTo(writer);
+                    }
+                    return responseJson;
                 default:
-                    responseObject.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
-                    return responseObject;
+                    validateSession(sessionKey);
+                    int[][] mapArray;
 
+                    JArray arr = (JArray)requestJson["map"];
+
+                    int algorithm = (requestJson["algorithm"] != null) ? (int)requestJson["algorithm"] : 0;
+
+                    if (requestJson["settings"] != null)
+                    {
+                        JArray settings = (JArray)requestJson["settings"];
+                        mapArray = applyCustomOptions(arr.ToObject<int[][]>(), settings.ToObject<int[]>());
+                    }
+                    else
+                        mapArray = arr.ToObject<int[][]>();
+
+                    switch (algorithm)
+                    {
+                        case 0:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
+                            return responseJson;
+                        case 1:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculateAStar(mapArray)));
+                            return responseJson;
+                        case 2:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculateDijkstra(mapArray)));
+                            return responseJson;
+                        case 3:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculateGeneric(mapArray)));
+                            return responseJson;
+                        case 4:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculatePathOwn(mapArray)));
+                            return responseJson;
+                        case 5:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculatePathDumb(mapArray)));
+                            return responseJson;
+                        default:
+                            responseJson.Add("data", JArray.FromObject(PathfindingApi.calculatePathRandom(mapArray)));
+                            return responseJson;
+
+                    }
             }
+        }
 
+        private static void validateSession(string sessionKey)
+        {
+            if (ServerSession.getInstance().isSessionValid(sessionKey))
+            {
+                throw new NotSupportedException();
+            }
         }
 
         private static JObject createDefaultMapsObject()
