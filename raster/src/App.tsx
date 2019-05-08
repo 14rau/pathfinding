@@ -50,8 +50,9 @@ class App extends Component<IAppProps> {
           <Button icon="log-out" intent="danger" onClick={async () => {
             window.localStorage.setItem("token", "");
             try {
-              await this.props.apiController.post("pathfinding/logout/", { session: this.props.pageStore.token })
+              await this.props.apiController.post("pathfinding/logout/", { session: toJS(this.props.pageStore.token) })
             } catch (err) {
+              console.log(err);
               alert("Oppsi")
             }
             window.location.assign("/");
