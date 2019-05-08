@@ -56,7 +56,7 @@ export class ApiController{
     }
 
     public async post(path: string, data) {
-        return await this.baseRequest(path, data, "POST");
+        return await this.baseRequest(path, {...data, session: window.localStorage.getItem("token")}, "POST");
     }
 
     public async get(path: string) {
