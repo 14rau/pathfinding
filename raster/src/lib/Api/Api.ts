@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 
 export class ApiController{
-    constructor(private apiport, private apihost, private protocoll) {}
+    constructor(public apiport, public apihost, public protocoll) {}
 
     private async baseRequest(path: string, data, type: string) {
         try {

@@ -29,7 +29,7 @@ export class PageStore {
     private registredViews = [];
     
     constructor() {
-      this.apiController = new ApiController("8080", "192.168.1.2", "http");
+      this.apiController = new ApiController("8080", (window as any).apihost, "http");
       this.loadMaps();
     }
 
@@ -110,7 +110,11 @@ export class PageStore {
     @action
     public setMovement(movement: string[]) {
       this.movement = movement;
-      this.registredViews.forEach(e => e.update())
+      this.registredViews.forEach(e => {
+        try {
+          e.update();
+        } catch (err) {}
+      })
     }
 
     public register(view: any){

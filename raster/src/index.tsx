@@ -12,12 +12,12 @@ import { ApiController } from './lib/Api/Api';
 import { PageWrapper } from './PageWrapper';
 
 // sideeffect
-
-
+(window as any).apiHost = "localhost";
+(window as any).api = new ApiController("8080", (window as any).apiHost, "http");
 
 
 ReactDOM.render(
-    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", "192.168.1.2", "http")}>
+    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", (window as any).apiHost, "http")}>
         <div className="bp3-dark">
             <PageWrapper/>
         </div>
