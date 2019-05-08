@@ -17,7 +17,7 @@ interface IAppProps {
 
 
 
-@inject("pageStore")
+@inject("pageStore", "apiController")
 @observer
 class App extends Component<IAppProps> {
   @observable private showSettings = false;
