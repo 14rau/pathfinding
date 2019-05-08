@@ -12,7 +12,7 @@ namespace Server
         private static ServerSession instance;
 
         private List<User> users;
-        private List<string> sessionKeys;
+        private List<byte[]> sessionKeys;
 
         public static ServerSession getInstance()
         {
@@ -25,7 +25,7 @@ namespace Server
         {
             users = new List<User>();
             loadUsers();
-            sessionKeys = new List<string>();
+            sessionKeys = new List<byte[]>();
         }
 
         private void loadUsers()
@@ -99,17 +99,17 @@ namespace Server
             return false;
         }
 
-        internal string createNewSessionKey(string user)
+        internal byte[] createNewSessionKey(string user)
         {
-            string newSessionKey = HashTools.Hash(new Random(DateTime.Now.Millisecond).Next().ToString()+user,HashTools.createRandomSalt()).ToString();
+            byte[] newSessionKey = HashTools.Hash(new Random(DateTime.Now.Millisecond).Next().ToString()+user,HashTools.createRandomSalt());
             if(!sessionKeys.Contains(newSessionKey))
-                sessionKeys.Add(user);
-            return user;
+                sessionKeys.Add(newSessionKey);
+            return newSessionKey;
         }
 
-        internal bool isSessionValid(string sessionKey)
+        internal bool isSessionValid(byte[] sessionKey)
         {
-            foreach(string session in sessionKeys)
+            foreach(byte[] session in sessionKeys)
             {
                 if (session.Equals(sessionKey))
                     return true;
@@ -117,9 +117,9 @@ namespace Server
             return false;
         }
 
-        internal void endSession(string sessionKey)
+        internal void endSession(byte[] sessionKey)
         {
-            foreach (string session in sessionKeys)
+            foreach (byte[] session in sessionKeys)
             {
                 if (session.Equals(sessionKey))
                     sessionKeys.Remove(session);

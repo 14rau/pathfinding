@@ -66,7 +66,7 @@ namespace Server
             JObject requestJson = JObject.Parse(text);
             JObject responseJson = new JObject();
 
-            string sessionKey = (string)requestJson["session"];
+            byte[] sessionKey = (byte[])requestJson["session"];
 
 
             switch (endpoint)
@@ -78,7 +78,7 @@ namespace Server
                     string pass = (string)requestJson["pass"];
                     if (ServerSession.getInstance().validateUser(user, pass))
                     {
-                        string newSessionKey = ServerSession.getInstance().createNewSessionKey(user);
+                        byte[] newSessionKey = ServerSession.getInstance().createNewSessionKey(user);
                         responseJson.Add("session", newSessionKey);
                         return responseJson;
                     }
@@ -147,7 +147,7 @@ namespace Server
             }
         }
 
-        private static void validateSession(string sessionKey)
+        private static void validateSession(byte[] sessionKey)
         {
             if (ServerSession.getInstance().isSessionValid(sessionKey))
             {
