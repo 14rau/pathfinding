@@ -20,12 +20,8 @@ export class WebGL extends React.Component<IWebGLProps>{
         this.props.pageStore.register(this);
     }
 
-    componentDidUpdate() {
-        
-    }
-
     public update() {
-        this.animationHandler.updateMovementPath(toJS(this.props.pageStore.movement)) 
+        this.animationHandler.updateMovementPath(this.props.pageStore.movement) 
     }
     
     componentDidMount(){

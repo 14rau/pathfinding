@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react"
-import { observable, toJS } from "mobx";
+import { observable } from "mobx";
 import autobind from "autobind-decorator";
 import { FieldType } from "./Tile/Tile";
-import { Utils } from "../../lib/Util";
-import { Grid } from "./Grid/Grid";
 import { Hints } from "./Hints/Hints";
 import { PageStore } from "../../lib/PageStore";
 import { Button, Overlay, Classes } from "@blueprintjs/core";
@@ -50,6 +48,7 @@ export class Editor extends Component<IEditorProps> {
   // track the editor state -> in which mode are we? Set Goal, Walls, Start?
   @observable private editorState = FieldType.NOTHING;
   @observable private matrixInput = "";
+  private gridRef: Grid2;
 
   public static options = [{
     label: "House",
@@ -79,7 +78,7 @@ export class Editor extends Component<IEditorProps> {
     label: "Building Site",
     value: FieldType.BUILDINGSITE,
     color: "tomato"
-  }]
+  },]
 
   public render() {
     if (this.props.pageStore == null) {
@@ -98,6 +97,7 @@ export class Editor extends Component<IEditorProps> {
                   this.onChangeData(yi, xi, x);
                 })
               })
+              this.updateMap();
             }} />
           </div>
         </Overlay>
@@ -143,7 +143,7 @@ export class Editor extends Component<IEditorProps> {
           <div>
             <span className="detailBadge">Y: {this.props.pageStore.sizeY} X: {this.props.pageStore.sizeX} <br /></span>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <Grid2 type={this.editorState} onChange={this.onChangeData} />
+              <Grid2 ref={e => this.gridRef = e} type={this.editorState} onChange={this.onChangeData} />
             </div>
           </div>
           <div>
@@ -160,6 +160,13 @@ export class Editor extends Component<IEditorProps> {
         </div>
       </>
     );
+  }
+
+  @autobind
+  private updateMap() {
+    // we run in a problem, because we use an injector
+    (this as any).gridRef.wrappedInstance.updateMap();
+    this.props.pageStore.forceUpdate();
   }
 
   @autobind
