@@ -39,7 +39,7 @@ export class Login extends React.Component<ILoginProps>{
                 <div style={{border: "1px solid #ddd"}}><Icon icon="user" intent="success" iconSize={24}/></div>
             </ControlGroup>
             <ControlGroup fill={true} vertical={false}>
-                <InputGroup value={this.pass} onChange={e => this.pass = e.target.value}/>
+                <InputGroup type="password" value={this.pass} onChange={e => this.pass = e.target.value}/>
                 <div style={{border: "1px solid #ddd"}}><Icon icon="key" intent="success" iconSize={24}/></div>
             </ControlGroup>
             <Button loading={this.loading} onClick={async () => {
@@ -51,6 +51,7 @@ export class Login extends React.Component<ILoginProps>{
                         this.props.pageStore.token = response.session;
                         await this.props.pageStore.checkAuthenticated();
                         window.localStorage.setItem("token", response.session);
+                        this.props.pageStore.isAuthenticated = true;
                     } else {
                         this.error = "Login was invalid"
                     }
