@@ -47,6 +47,10 @@ namespace Server
                         var context = c as HttpListenerContext;
                         try
                         {
+                                context.Response.AddHeader("Access-Control-Allow-Headers", "*");
+                                context.Response.AddHeader("Access-Control-Allow-Origin", "*");
+                                context.Response.AddHeader("Access-Control-Allow-Methods", "*");
+
                                 JObject responseObject = _responderMethod(context.Request);
                                 if (!(responseObject.Count == 0))
                                 {
@@ -61,13 +65,6 @@ namespace Server
                             }
                             finally
                             {
-                                if (context.Request.HttpMethod == "OPTIONS")
-                                {
-                                    context.Response.AddHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-                                }
-                                context.Response.AddHeader("Access-Control-Allow-Origin", "*");
-                                context.Response.AddHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-
                                 context.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());
