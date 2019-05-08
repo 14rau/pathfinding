@@ -13,7 +13,6 @@ namespace Server
          * 2 = was agent - deprecated
          * 3 = starting point
          * 4 = goal
-         * 5 = fixed wall (not drawable or removable from user -> outer frame)
          **/
         public static string[] calculatePathOwn(int[][] map)
         {
