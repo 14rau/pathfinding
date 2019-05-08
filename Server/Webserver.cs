@@ -48,9 +48,13 @@ namespace Server
                         try
                         {
                                 JObject responseObject = _responderMethod(context.Request);
-                                byte[] buffer = Encoding.UTF8.GetBytes(responseObject.ToString());
-                                context.Response.ContentLength64 = buffer.Length;
-                                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                                if (!(responseObject.Count == 0))
+                                {
+                                    byte[] buffer = Encoding.UTF8.GetBytes(responseObject.ToString());
+                                    context.Response.ContentLength64 = buffer.Length;
+                                    context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                                }
+                                
                             }
                             catch {
                                 context.Response.StatusCode = 404;
@@ -59,9 +63,11 @@ namespace Server
                             {
                                 if (context.Request.HttpMethod == "OPTIONS")
                                 {
-                                    context.Response.AddHeader("Access-Control-Allow-Headers", "*");
+                                    context.Response.AddHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                                 }
-                                context.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+                                context.Response.AddHeader("Access-Control-Allow-Origin", "*");
+                                context.Response.AddHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+
                                 context.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());

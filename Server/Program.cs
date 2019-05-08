@@ -63,8 +63,10 @@ namespace Server
                 text = reader.ReadToEnd();
             }
 
-            JObject requestJson = JObject.Parse(text);
             JObject responseJson = new JObject();
+            if (text.Length == 0)
+                return responseJson;
+            JObject requestJson = JObject.Parse(text);
 
             byte[] sessionKey = (byte[])requestJson["session"];
 
