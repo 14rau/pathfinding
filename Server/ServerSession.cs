@@ -111,7 +111,22 @@ namespace Server
         {
             foreach(byte[] session in sessionKeys)
             {
-                if (session.Equals(sessionKey))
+
+                bool bEqual = false;
+                if (sessionKey.Length == session.Length)
+                {
+                    int i = 0;
+                    while ((i < sessionKey.Length) && (sessionKey[i] == session[i]))
+                    {
+                        i += 1;
+                    }
+                    if (i == sessionKey.Length)
+                    {
+                        bEqual = true;
+                    }
+                }
+
+                if (bEqual)
                     return true;
             }
             return false;

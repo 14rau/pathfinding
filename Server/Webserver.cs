@@ -57,6 +57,11 @@ namespace Server
                             }
                             finally
                             {
+                                if (context.Request.HttpMethod == "OPTIONS")
+                                {
+                                    context.Response.AddHeader("Access-Control-Allow-Headers", "*");
+                                }
+                                context.Response.AppendHeader("Access-Control-Allow-Origin", "*");
                                 context.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());
