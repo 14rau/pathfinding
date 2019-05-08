@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Server
@@ -10,7 +12,7 @@ namespace Server
         private static ServerSession instance;
 
         private List<User> users;
-        private List<string> sessionKeys;
+        private List<byte[]> sessionKeys;
 
         public static ServerSession getInstance()
         {
@@ -22,9 +24,67 @@ namespace Server
         private ServerSession()
         {
             users = new List<User>();
-            byte[] salt = HashTools.createRandomSalt() ;
-            users.Add(new User("seow", salt, HashTools.Hash("seow230111", salt)));
-            sessionKeys = new List<string>();
+            loadUsers();
+            sessionKeys = new List<byte[]>();
+        }
+
+        private void loadUsers()
+        {
+            if(!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "userDB.json"))){
+                createDefaultUserDB();
+            }
+            using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), "userDB.json")))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JArray jUsers = (JArray)JToken.ReadFrom(reader);
+                foreach(JObject jUser in jUsers)
+                {
+                    string jName = (string)jUser["name"];
+                    byte[] jSalt = (byte[])jUser["salt"];
+                    byte[] jPass = (byte[])jUser["pass"];
+                    users.Add(new User(jName,jSalt, jPass));
+                }
+
+            }
+        }
+        private void createDefaultUserDB()
+        {
+            byte[] salt = HashTools.createRandomSalt();
+
+            JArray tusers = new JArray();
+            JObject seow = new JObject();
+            seow.Add("name", "Seow");
+            seow.Add("pass", HashTools.Hash("seow230111", salt));
+            seow.Add("salt", salt);
+            tusers.Add(seow);
+
+            salt = HashTools.createRandomSalt();
+            JObject patrick = new JObject();
+            patrick.Add("name", "Patrick");
+            patrick.Add("pass", HashTools.Hash("panda", salt));
+            patrick.Add("salt", salt);
+            tusers.Add(patrick);
+
+            salt = HashTools.createRandomSalt();
+            JObject artem = new JObject();
+            artem.Add("name", "Artem");
+            artem.Add("pass", HashTools.Hash("root", salt));
+            artem.Add("salt", salt);
+            tusers.Add(artem);
+
+            salt = HashTools.createRandomSalt();
+            JObject guest = new JObject();
+            guest.Add("name", "Guest");
+            guest.Add("pass", HashTools.Hash("guess", salt));
+            guest.Add("salt", salt);
+            tusers.Add(guest);
+
+
+            using (StreamWriter file = File.CreateText(Path.Combine(Directory.GetCurrentDirectory(), "userDB.json")))
+            using (JsonTextWriter writer = new JsonTextWriter(file))
+            {
+                tusers.WriteTo(writer);
+            }
         }
 
         internal bool validateUser(string username, string pass)
@@ -39,17 +99,17 @@ namespace Server
             return false;
         }
 
-        internal string createNewSessionKey(string user)
+        internal byte[] createNewSessionKey(string user)
         {
-            string newSessionKey = user;
+            byte[] newSessionKey = HashTools.Hash(new Random(DateTime.Now.Millisecond).Next().ToString()+user,HashTools.createRandomSalt());
             if(!sessionKeys.Contains(newSessionKey))
-                sessionKeys.Add(user);
-            return user;
+                sessionKeys.Add(newSessionKey);
+            return newSessionKey;
         }
 
-        internal bool isSessionValid(string sessionKey)
+        internal bool isSessionValid(byte[] sessionKey)
         {
-            foreach(string session in sessionKeys)
+            foreach(byte[] session in sessionKeys)
             {
                 if (session.Equals(sessionKey))
                     return true;
@@ -57,9 +117,9 @@ namespace Server
             return false;
         }
 
-        internal void endSession(string sessionKey)
+        internal void endSession(byte[] sessionKey)
         {
-            foreach (string session in sessionKeys)
+            foreach (byte[] session in sessionKeys)
             {
                 if (session.Equals(sessionKey))
                     sessionKeys.Remove(session);
