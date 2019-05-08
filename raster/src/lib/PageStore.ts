@@ -29,7 +29,7 @@ export class PageStore {
     private registredViews = [];
     
     constructor() {
-      this.apiController = new ApiController("8080", "localhost", "http");
+      this.apiController = new ApiController("8080", "192.168.1.2", "http");
       this.loadMaps();
     }
 

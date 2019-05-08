@@ -17,7 +17,7 @@ import { PageWrapper } from './PageWrapper';
 
 
 ReactDOM.render(
-    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", "localhost", "http")}>
+    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", "192.168.1.2", "http")}>
         <div className="bp3-dark">
             <PageWrapper/>
         </div>
