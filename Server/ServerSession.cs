@@ -73,6 +73,13 @@ namespace Server
             tusers.Add(artem);
 
             salt = HashTools.createRandomSalt();
+            JObject simon = new JObject();
+            simon.Add("name", "Simon");
+            simon.Add("pass", HashTools.Hash("pimmel", salt));
+            simon.Add("salt", salt);
+            tusers.Add(simon);
+
+            salt = HashTools.createRandomSalt();
             JObject guest = new JObject();
             guest.Add("name", "Guest");
             guest.Add("pass", HashTools.Hash("guess", salt));
