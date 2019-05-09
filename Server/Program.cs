@@ -68,8 +68,7 @@ namespace Server
                 return responseJson;
             JObject requestJson = JObject.Parse(text);
 
-            byte[] sessionKey = (byte[])requestJson["session"];
-
+            byte[] sessionKey = new byte[0];
 
             switch (endpoint)
             {
@@ -96,15 +95,18 @@ namespace Server
                     }
                 case "logout/":
                     Console.WriteLine("logout attempt");
+                    sessionKey = (byte[])requestJson["session"];
                     ServerSession.getInstance().endSession(sessionKey);
                     Console.WriteLine("logout successful");
 
                     return responseJson;
                 case "valid/":
                     Console.WriteLine("validate session");
+                    sessionKey = (byte[])requestJson["session"];
                     responseJson.Add("isValid", ServerSession.getInstance().isSessionValid(sessionKey));
                     return responseJson;
                 case "save/":
+                    sessionKey = (byte[])requestJson["session"];
                     validateSession(sessionKey);
                     string name = (string)requestJson["name"];
                     Console.WriteLine("Attempt to save map: " + name);
@@ -117,6 +119,7 @@ namespace Server
                     return responseJson;
                 default:
                     Console.WriteLine("Path requested");
+                    sessionKey = (byte[])requestJson["session"];
 
                     validateSession(sessionKey);
                     int[][] mapArray;
