@@ -1,3 +1,4 @@
+(global as any).settings = require("../settings.json")
 import { observable, action, toJS } from "mobx";
 import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
@@ -29,7 +30,7 @@ export class PageStore {
     private registredViews = [];
     
     constructor() {
-      this.apiController = new ApiController("8080", (window as any).apihost, "http");
+      this.apiController = new ApiController("8080", "localhost", "http");
       this.loadMaps();
     }
 
