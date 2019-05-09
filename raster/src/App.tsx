@@ -53,7 +53,6 @@ class App extends Component<IAppProps> {
               await this.props.apiController.post("pathfinding/logout/", { session: toJS(this.props.pageStore.token) })
             } catch (err) {
               console.log(err);
-              alert("Oppsi")
             }
             window.location.assign("/");
           }}/>
