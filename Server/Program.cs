@@ -63,8 +63,10 @@ namespace Server
                 text = reader.ReadToEnd();
             }
 
-            JObject requestJson = JObject.Parse(text);
             JObject responseJson = new JObject();
+            if (text.Length == 0)
+                return responseJson;
+            JObject requestJson = JObject.Parse(text);
 
             byte[] sessionKey = (byte[])requestJson["session"];
 
@@ -72,30 +74,40 @@ namespace Server
             switch (endpoint)
             {
                 case "map/":
+                    Console.WriteLine("maps were requested");
                     return createDefaultMapsObject();
                 case "login/":
                     string user = (string)requestJson["user"];
+                    Console.WriteLine("login attempt from: "+ user);
                     string pass = (string)requestJson["pass"];
                     if (ServerSession.getInstance().validateUser(user, pass))
                     {
                         byte[] newSessionKey = ServerSession.getInstance().createNewSessionKey(user);
                         responseJson.Add("session", newSessionKey);
+                        Console.WriteLine("login successful");
+
                         return responseJson;
                     }
                     else
                     {
                         responseJson.Add("session", null);
+                        Console.WriteLine("login failed");
                         return responseJson;
                     }
                 case "logout/":
+                    Console.WriteLine("logout attempt");
                     ServerSession.getInstance().endSession(sessionKey);
+                    Console.WriteLine("logout successful");
+
                     return responseJson;
                 case "valid/":
+                    Console.WriteLine("validate session");
                     responseJson.Add("isValid", ServerSession.getInstance().isSessionValid(sessionKey));
                     return responseJson;
                 case "save/":
                     validateSession(sessionKey);
                     string name = (string)requestJson["name"];
+                    Console.WriteLine("Attempt to save map: " + name);
 
                     using (StreamWriter file = File.CreateText(Path.Combine(getDir(), name + ".json")))
                     using (JsonTextWriter writer = new JsonTextWriter(file))
@@ -104,6 +116,8 @@ namespace Server
                     }
                     return responseJson;
                 default:
+                    Console.WriteLine("Path requested");
+
                     validateSession(sessionKey);
                     int[][] mapArray;
 
@@ -149,7 +163,7 @@ namespace Server
 
         private static void validateSession(byte[] sessionKey)
         {
-            if (ServerSession.getInstance().isSessionValid(sessionKey))
+            if (!ServerSession.getInstance().isSessionValid(sessionKey))
             {
                 throw new NotSupportedException();
             }

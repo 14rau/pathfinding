@@ -9,8 +9,10 @@ export class ApiController{
             let res = await fetch(`${this.protocoll}://${this.apihost}:${this.apiport}/${path}`, {
                 method: type,
                 headers: {
-                    "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json",
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "*",
                 },
                 body: JSON.stringify(data)
             });
