@@ -1,4 +1,3 @@
-(global as any).settings = require("../settings.json")
 import { observable, action, toJS } from "mobx";
 import autobind from "autobind-decorator";
 import { WebGL } from "./WebGL";
