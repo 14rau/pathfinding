@@ -11,13 +11,10 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css"
 import { ApiController } from './lib/Api/Api';
 import { PageWrapper } from './PageWrapper';
 
-// sideeffect
-(window as any).apiHost = "localhost";
-(window as any).api = new ApiController("8080", (window as any).apiHost, "http");
-
+console.log(process.env)
 
 ReactDOM.render(
-    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", (window as any).apiHost, "http")}>
+    <Provider pageStore={new PageStore()} apiController={new ApiController("8080", "localhost", "http")}>
         <div className="bp3-dark">
             <PageWrapper/>
         </div>
